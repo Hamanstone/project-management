@@ -3,11 +3,14 @@
 header('Content-Type: application/json');
 
 $summaryDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'summary';
-if (!is_dir($summaryDir) && !mkdir($summaryDir, 0777, true) && !is_dir($summaryDir)) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Unable to initialize summary storage.']);
-    exit;
+if (!is_dir($summaryDir)) {
+    if (!mkdir($summaryDir, 0755, true) && !is_dir($summaryDir)) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Unable to initialize summary storage.']);
+        exit;
+    }
 }
+@chmod($summaryDir, 0755);
 
 require_once __DIR__ . '/src/config/db.php';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
