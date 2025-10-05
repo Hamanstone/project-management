@@ -36,7 +36,7 @@ function normalize_date(?string $value): ?string
     return ($date && $date->format('Y-m-d') === $value) ? $value : null;
 }
 
-function write_summary_file(string $baseDir, int $id, string $name, string $contents): string
+function build_summary_filename(int $id, string $name): string
 {
     $slug = preg_replace('/[^A-Za-z0-9]+/', '-', strtolower($name));
     $slug = trim($slug, '-');
@@ -44,15 +44,60 @@ function write_summary_file(string $baseDir, int $id, string $name, string $cont
         $slug = 'project';
     }
 
-    $timestamp = date('Ymd_His');
-    $filename = sprintf('%d_%s_%s.md', $id, $slug, $timestamp);
-    $filepath = $baseDir . DIRECTORY_SEPARATOR . $filename;
+    return sprintf('%d_%s.md', $id, $slug);
+}
 
-    if (file_put_contents($filepath, $contents, LOCK_EX) === false) {
+function resolve_summary_path(string $baseDir, ?string $link): ?string
+{
+    if ($link === null || $link === '') {
+        return null;
+    }
+
+    $relative = ltrim($link, '/');
+    if (strpos($relative, 'summary/') === 0) {
+        $relative = substr($relative, strlen('summary/'));
+    }
+
+    if ($relative === '') {
+        return null;
+    }
+
+    return $baseDir . DIRECTORY_SEPARATOR . $relative;
+}
+
+function write_summary_file(string $baseDir, int $id, string $name, string $contents, ?string $existingLink = null): string
+{
+    $preferredFilename = build_summary_filename($id, $name);
+    $preferredPath = $baseDir . DIRECTORY_SEPARATOR . $preferredFilename;
+    $targetPath = $preferredPath;
+
+    $existingPath = resolve_summary_path($baseDir, $existingLink);
+    if ($existingPath && file_exists($existingPath)) {
+        $existingFilename = basename($existingPath);
+
+        if ($existingFilename !== $preferredFilename) {
+            if (!file_exists($preferredPath)) {
+                if (@rename($existingPath, $preferredPath)) {
+                    $existingPath = $preferredPath;
+                    $existingFilename = $preferredFilename;
+                }
+            }
+        }
+
+        if ($existingFilename === $preferredFilename) {
+            $targetPath = $existingPath;
+        } else {
+            $targetPath = $existingPath;
+        }
+    } elseif (file_exists($preferredPath)) {
+        $targetPath = $preferredPath;
+    }
+
+    if (file_put_contents($targetPath, $contents, LOCK_EX) === false) {
         throw new RuntimeException('Unable to write summary file.');
     }
 
-    return 'summary/' . $filename;
+    return 'summary/' . basename($targetPath);
 }
 
 $name = sanitize_text($_POST['name'] ?? '');
@@ -85,9 +130,27 @@ $stage = $stage !== '' ? $stage : 'Unknown';
 
 try {
     if ($id) {
+        $currentSummaryLink = null;
+        $stmt = $conn->prepare('SELECT summary_link FROM projects WHERE id = ?');
+        if (!$stmt) {
+            throw new RuntimeException('Failed to prepare summary lookup statement: ' . $conn->error);
+        }
+        $stmt->bind_param('i', $id);
+        if (!$stmt->execute()) {
+            throw new RuntimeException('Failed to lookup existing summary: ' . $stmt->error);
+        }
+        $result = $stmt->get_result();
+        $row = $result ? $result->fetch_assoc() : null;
+        $stmt->close();
+
+        if (!$row) {
+            throw new RuntimeException('Project not found.');
+        }
+        $currentSummaryLink = $row['summary_link'] ?? null;
+
         $summaryLink = null;
         if ($summary !== '') {
-            $summaryLink = write_summary_file($summaryDir, $id, $name, $summary);
+            $summaryLink = write_summary_file($summaryDir, $id, $name, $summary, $currentSummaryLink);
         }
 
         if ($summaryLink !== null) {
@@ -162,7 +225,7 @@ try {
         $stmt->close();
 
         if ($summary !== '') {
-            $summaryLink = write_summary_file($summaryDir, $id, $name, $summary);
+            $summaryLink = write_summary_file($summaryDir, $id, $name, $summary, null);
             $stmt = $conn->prepare('UPDATE projects SET summary_link = ? WHERE id = ?');
             if ($stmt) {
                 $stmt->bind_param('si', $summaryLink, $id);
