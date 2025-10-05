@@ -157,7 +157,7 @@ try {
         }
 
         if ($summaryLink !== null) {
-            $sql = 'UPDATE projects SET name = ?, customer = ?, owner = ?, status = ?, stage = ?, model = ?, sku = ?, begin_date = ?, end_date = ?, summary_link = ? WHERE id = ?';
+            $sql = 'UPDATE projects SET name = ?, customer = ?, owner = ?, status = ?, stage = ?, model = ?, sku = ?, begin_date = ?, end_date = ?, summary_link = ?, updated_at = NOW() WHERE id = ?';
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
                 throw new RuntimeException('Failed to prepare update statement: ' . $conn->error);
@@ -177,7 +177,7 @@ try {
                 $id
             );
         } else {
-            $sql = 'UPDATE projects SET name = ?, customer = ?, owner = ?, status = ?, stage = ?, model = ?, sku = ?, begin_date = ?, end_date = ? WHERE id = ?';
+            $sql = 'UPDATE projects SET name = ?, customer = ?, owner = ?, status = ?, stage = ?, model = ?, sku = ?, begin_date = ?, end_date = ?, updated_at = NOW() WHERE id = ?';
             $stmt = $conn->prepare($sql);
             if (!$stmt) {
                 throw new RuntimeException('Failed to prepare update statement: ' . $conn->error);
@@ -202,7 +202,7 @@ try {
         }
         $stmt->close();
     } else {
-        $sql = 'INSERT INTO projects (name, customer, owner, status, stage, model, sku, begin_date, end_date, summary_link) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        $sql = 'INSERT INTO projects (name, customer, owner, status, stage, model, sku, begin_date, end_date, summary_link, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())';
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
             throw new RuntimeException('Failed to prepare insert statement: ' . $conn->error);
@@ -238,7 +238,7 @@ try {
         }
     }
 
-    $stmt = $conn->prepare('SELECT id, name, customer, owner, status, stage, model, sku, begin_date, end_date, summary_link FROM projects WHERE id = ?');
+    $stmt = $conn->prepare('SELECT id, name, customer, owner, status, stage, model, sku, begin_date, end_date, summary_link, updated_at FROM projects WHERE id = ?');
     if (!$stmt) {
         throw new RuntimeException('Failed to prepare fetch statement: ' . $conn->error);
     }

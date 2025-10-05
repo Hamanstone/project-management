@@ -6,11 +6,8 @@ header('Content-Type: application/json');
 
 $projects = [];
 
-// 更新 SQL 查詢以包含所有需要的欄位，並移除不再需要的欄位
-// 確保 model 和 sku 在查詢列表中
-// 移除 description, tags, team, updated_at 等不存在的欄位來修復 SQL 錯誤
-// 將 updated_at 加入查詢，確保前端能獲取到真實的最後更新時間
-$sql = "SELECT id, name, model, sku, customer, owner, status, stage, summary_link, begin_date, end_date FROM projects ORDER BY name ASC";
+// 更新 SQL 查詢以包含所有需要的欄位，並確保 updated_at 供前端顯示最後更新時間
+$sql = "SELECT id, name, model, sku, customer, owner, status, stage, summary_link, begin_date, end_date, updated_at FROM projects ORDER BY name ASC";
 
 $result = $conn->query($sql);
 

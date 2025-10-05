@@ -6,1576 +6,1618 @@
     <link rel="stylesheet" href="assets/css/fonts.css" />
     <link rel="stylesheet" href="assets/css/font-awesome.all.min.css" />
     <style>
-  :root {
-    --detail-drawer-offset: 1.5rem;
-  }
-  .custom-select {
-    position: relative;
-    min-width: 200px;
-    width: 220px;
-    max-width: 100%;
-    font-size: 0.875rem;
-    user-select: none;
-  }
+      :root {
+        --detail-drawer-offset: 1.5rem;
+      }
+      .custom-select {
+        position: relative;
+        min-width: 200px;
+        width: 220px;
+        max-width: 100%;
+        font-size: 0.875rem;
+        user-select: none;
+      }
 
-  .custom-select .selected {
-    background: #fff;
-    border: 1px solid #d4dce2;
-    border-radius: 12px;
-    padding: 10px 36px 10px 12px;
-    cursor: pointer;
-    line-height: 1.2;
-    position: relative;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  }
+      .custom-select .selected {
+        background: #fff;
+        border: 1px solid #d4dce2;
+        border-radius: 12px;
+        padding: 10px 36px 10px 12px;
+        cursor: pointer;
+        line-height: 1.2;
+        position: relative;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
 
-  .custom-select .selected:focus {
-    outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-  }
+      .custom-select .selected:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      }
 
-  .custom-select .selected::after {
-    content: "";
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    width: 14px;
-    height: 14px;
-    transform: translateY(-50%) rotate(0deg);
-    transition: transform 140ms ease;
-    background: center/contain no-repeat url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d='M7 10l5 5 5-5'/></svg>");
-    opacity: 0.7;
-  }
+      .custom-select .selected::after {
+        content: "";
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        width: 14px;
+        height: 14px;
+        transform: translateY(-50%) rotate(0deg);
+        transition: transform 140ms ease;
+        background: center/contain no-repeat url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'><path d='M7 10l5 5 5-5'/></svg>");
+        opacity: 0.7;
+      }
 
-  .custom-select.open .selected::after {
-    transform: translateY(-50%) rotate(180deg);
-  }
+      .custom-select.open .selected::after {
+        transform: translateY(-50%) rotate(180deg);
+      }
 
-  .custom-select .options {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    max-height: 0;
-    opacity: 0;
-    transform: translateY(-6px) scale(0.98);
-    pointer-events: none;
-    transition: max-height 140ms ease, opacity 140ms ease, transform 140ms ease;
-    z-index: 20;
-  }
+      .custom-select .options {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+        pointer-events: none;
+        transition: max-height 140ms ease, opacity 140ms ease, transform 140ms ease;
+        z-index: 20;
+      }
 
-  .custom-select.open .options {
-    max-height: 260px;
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
-  }
+      .custom-select.open .options {
+        max-height: 260px;
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+      }
 
-  .custom-select .options li {
-    padding: 12px;
-    cursor: pointer;
-    line-height: 1.3;
-  }
+      .custom-select .options li {
+        padding: 12px;
+        cursor: pointer;
+        line-height: 1.3;
+      }
 
-  .custom-select .options li:hover,
-  .custom-select .options li.is-active {
-    background: #f0f0f0;
-  }
+      .custom-select .options li:hover,
+      .custom-select .options li.is-active {
+        background: #f0f0f0;
+      }
 
-  .custom-select .options li:first-child:hover {
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-  }
+      .custom-select .options li:first-child:hover {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+      }
 
-  .custom-select .options li:last-child:hover {
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-  }
+      .custom-select .options li:last-child:hover {
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+      }
 
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-  .project-toolbar-sticky {
-    position: sticky;
-    top: 0;
-    z-index: 25;
-    transition: transform 0.3s ease-in-out;
-  }
-  .project-toolbar-sticky.is-hidden {
-    transform: translateY(-100%);
-  }
-  .project-toolbar-sticky.is-sticky {
-    position: sticky;
-    top: 0;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-  .text-xs {
-    font-size: 11px;
-  }
-  .markdown-body {
-    line-height: 1.6;
-  }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .project-toolbar-sticky {
+        position: sticky;
+        top: 0;
+        z-index: 25;
+        transition: transform 0.3s ease-in-out;
+      }
+      .project-toolbar-sticky.is-hidden {
+        transform: translateY(-100%);
+      }
+      .project-toolbar-sticky.is-sticky {
+        position: sticky;
+        top: 0;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      .text-xs {
+        font-size: 11px;
+      }
+      .markdown-body {
+        line-height: 1.6;
+      }
 
-  .markdown-body pre {
-    background: #0f172a;
-    color: #e2e8f0;
-    padding: 12px 16px;
-    border-radius: 12px;
-    overflow-x: auto;
-    font-size: 0.8rem;
-    line-height: 1.7;
-    border: 1px solid rgba(148, 163, 184, 0.25);
-    margin: 0 0 1rem;
-  }
+      .markdown-body pre {
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 12px 16px;
+        border-radius: 12px;
+        overflow-x: auto;
+        font-size: 0.8rem;
+        line-height: 1.7;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        margin: 0 0 1rem;
+      }
 
-  .markdown-body pre code {
-    background: transparent;
-    color: inherit;
-    padding: 0;
-    font-family: "Fira Code", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  }
+      .markdown-body pre code {
+        background: transparent;
+        color: inherit;
+        padding: 0;
+        font-family: "Fira Code", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
 
-  .markdown-body code {
-    background: rgba(148, 163, 184, 0.12);
-    color: #0f172a;
-    padding: 2px 6px;
-    border-radius: 6px;
-    font-size: 0.82rem;
-    font-family: "Fira Code", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  }
+      .markdown-body code {
+        background: rgba(148, 163, 184, 0.12);
+        color: #0f172a;
+        padding: 2px 6px;
+        border-radius: 6px;
+        font-size: 0.82rem;
+        font-family: "Fira Code", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
 
-  .markdown-body h1,
-  .markdown-body h2,
-  .markdown-body h3,
-  .markdown-body h4 {
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-  }
+      .markdown-body h1,
+      .markdown-body h2,
+      .markdown-body h3,
+      .markdown-body h4 {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+      }
 
-  .markdown-body p {
-    margin-bottom: 0.75rem;
-  }
+      .markdown-body p {
+        margin-bottom: 0.75rem;
+      }
 
-  .markdown-body ul,
-  .markdown-body ol {
-    margin-bottom: 0.75rem;
-    padding-left: 1.5rem;
-  }
+      .markdown-body ul,
+      .markdown-body ol {
+        margin-bottom: 0.75rem;
+        padding-left: 1.5rem;
+      }
 
-  .markdown-body code {
-    background: #f1f5f9;
-    padding: 0.1rem 0.4rem;
-    border-radius: 4px;
-    font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-    font-size: 0.85em;
-  }
+      .markdown-body code {
+        background: #f1f5f9;
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.85em;
+      }
 
-  .markdown-body pre {
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
+      .markdown-body pre {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
 
-  .markdown-body a {
-    color: #2563eb;
-    text-decoration: underline;
-  }
+      .markdown-body a {
+        color: #2563eb;
+        text-decoration: underline;
+      }
 
-  .project-detail-sticky {
-    position: sticky;
-    top: var(--detail-drawer-offset, 1.5rem);
-    max-height: calc(100vh - 80px - var(--detail-drawer-offset, 1.5rem) - 1rem);
-    display: flex;
-    flex-direction: column;
-  }
+      .project-detail-sticky {
+        position: sticky;
+        top: var(--detail-drawer-offset, 1.5rem);
+        max-height: calc(100vh - 80px - var(--detail-drawer-offset, 1.5rem) - 1rem);
+        display: flex;
+        flex-direction: column;
+      }
 
-  .project-detail-sticky .detail-scroll {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    padding-right: 4px;
-    margin-right: -4px;
-  }
+      .project-detail-sticky .detail-scroll {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding-right: 4px;
+        margin-right: -4px;
+      }
 
-  .project-row {
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-  }
+      .project-row {
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+      }
 
-  .project-row.is-selected {
-    background-color: #e8f1ff;
-  }
+      .project-row.is-selected {
+        background-color: #e8f1ff;
+      }
 
-  .project-row.is-selected:hover {
-    background-color: #e0ebff;
-  }
+      .project-row.is-selected:hover {
+        background-color: #e0ebff;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+      $(function () {
+        const endpoint = 'api/ajax_all_projects.php';
+        const saveEndpoint = 'api/save_project.php';
+        const $doc = $(document);
 
-</style>
+        const els = {
+          $search: $('#projects-search'),
+          $statusSelect: $('[data-select="status"]'),
+          $ownerSelect: $('[data-select="owner"]'),
+          $sortSelect: $('[data-select="sort"]'),
+          $tableBody: $('#projects-table-body'),
+          $loading: $('#projects-loading'),
+          $empty: $('#projects-empty'),
+          stats: {
+            $total: $('#projects-total'),
+            $active: $('#projects-active'),
+            $risk: $('#projects-risk'),
+            $risk: $('#projects-non-mp'),
+            $upcoming: $('#projects-upcoming')
+          },
+          $banner: $('#projects-banner'),
+          $detailDrawer: $('#project-detail-drawer'),
+          $detailTitle: $('#project-detail-title'),
+          $detailSubtitle: $('#project-detail-subtitle'),
+          $detailContent: $('#project-detail-content'),
+          $detailClose: $('#project-detail-close'),
+          $addBtn: $('#projects-add'),
+          $exportBtn: $('#projects-export'),
+          $refreshBtn: $('#projects-refresh'),
+          $modal: $('#project-modal'),
+          $modalTitle: $('#project-modal-title'),
+          $modalForm: $('#project-form'),
+          $modalSubmit: $('#project-form button[type="submit"]'),
+          $modalStatusSelect: $('[data-select="modal-status"]'),
+          $modalStageSelect: $('[data-select="modal-stage"]'),
+          $modalStatusHidden: $('[data-select-hidden="status"]'),
+          $modalStageHidden: $('[data-select-hidden="stage"]')
+        };
+
+        const state = {
+          projects: [],
+          filtered: [],
+          filters: {
+            search: '',
+            status: '',
+            owner: '',
+            sort: 'name-asc'
+          },
+          selectedId: null,
+          editingId: null,
+          fallbackNotified: false
+        };
+
+        function collapseSidebar() {
+          const $sidebar = $("#sidebar");
+          if (!$sidebar.length) return;
+
+          const $mainContent = $("#main-content");
+          const isOpen = $sidebar.hasClass("w-60") || !$sidebar.hasClass("w-0");
+          if (!isOpen) return;
+
+          $sidebar.removeClass("w-60 opacity-100").addClass("w-0 opacity-0 overflow-hidden");
+          if ($mainContent.length) {
+            $mainContent.css("margin-left", "0");
+          }
+        }
+
+        function expandSidebar() {
+          const $sidebar = $("#sidebar");
+          if (!$sidebar.length) return;
+
+          const $mainContent = $("#main-content");
+          const isClosed = $sidebar.hasClass("w-0") || !$sidebar.hasClass("w-60");
+          if (!isClosed) return;
+
+          $sidebar.removeClass("w-0 opacity-0 overflow-hidden").addClass("w-60 opacity-100");
+          if ($mainContent.length) {
+            $mainContent.css("margin-left", "15rem");
+          }
+        }
+
+        const statusBadge = {
+          Active: 'bg-emerald-100 text-emerald-700',
+          Verifing: 'bg-amber-100 text-amber-700',
+          Pendding: 'bg-gray-200 text-gray-700',
+          'Line Setup': 'bg-blue-100 text-blue-700',
+          Blocked: 'bg-red-100 text-red-700'
+        };
+
+        const stageBadge = {
+          MP: 'bg-blue-100 text-blue-700',
+          PR: 'bg-purple-100 text-purple-700',
+          PR2: 'bg-purple-100 text-purple-700',
+          ER: 'bg-amber-100 text-amber-700',
+          Discovery: 'bg-sky-100 text-sky-700',
+          Design: 'bg-pink-100 text-pink-700',
+          Launch: 'bg-emerald-100 text-emerald-700',
+          Planning: 'bg-slate-100 text-slate-700',
+          Testing: 'bg-amber-100 text-amber-700',
+          Completed: 'bg-emerald-100 text-emerald-700',
+          'On Track': 'bg-emerald-100 text-emerald-700',
+          'At Risk': 'bg-amber-100 text-amber-700',
+          Blocked: 'bg-red-100 text-red-700'
+        };
+
+        const SORT_OPTIONS = [
+          { value: 'name-asc', label: 'Name (A-Z)' },
+          { value: 'id-asc', label: 'Project ID (low to high)' },
+          { value: 'id-desc', label: 'Project ID (high to low)' },
+          { value: 'start-desc', label: 'Start date (newest)' },
+          { value: 'start-asc', label: 'Start date (oldest)' },
+          { value: 'status', label: 'Status' }
+        ];
+
+        let STATUS_FORM_OPTIONS = [];
+        let STAGE_FORM_OPTIONS = [];
+
+        const fallbackProjects = [
+          { id: 'P-102', name: 'Omnichannel Rollout', owner: 'Jane Cooper', status: 'Active', stage: 'MP', model: 'Model-X1', sku: 'SKU-001', startDate: '2025-06-01', endDate: '2025-09-30', description: 'Deploy unified storefront, inventory, and fulfillment experience across all retail locations.', tags: ['Retail', 'Launch', 'FY25'], team: ['Jane Cooper', 'Darlene Robertson', 'Devon Lane'], lastUpdated: '', summary_link: '' },
+          { id: 'P-204', name: 'Customer 360 Platform', owner: 'Cody Fisher', status: 'At Risk', stage: 'Discovery', model: 'Model-C360', sku: 'SKU-002', startDate: '2025-04-15', endDate: '2025-12-19', description: 'Consolidate support, marketing, and product telemetry to unlock a unified customer model.', tags: ['Platform', 'Data', 'Enterprise'], team: ['Cody Fisher', 'Guy Hawkins', 'Courtney Henry'], lastUpdated: '', summary_link: '' },
+          { id: 'P-311', name: 'Warehouse Automation', owner: 'Leslie Alexander', status: 'Active', stage: 'PR', model: 'Model-WMS', sku: 'SKU-003', startDate: '2025-05-01', endDate: '2025-11-25', description: 'Introduce robotics picking lanes and dynamic slotting to reduce order turnaround by 30%.', tags: ['Operations', 'Robotics'], team: ['Leslie Alexander', 'Marvin McKinney', 'Arlene McCoy'], lastUpdated: '', summary_link: '' },
+          { id: 'P-410', name: 'Next-Gen Mobile App', owner: 'Theresa Webb', status: 'On Hold', stage: 'Design', model: 'Model-M2', sku: 'SKU-004', startDate: '2025-02-10', endDate: '2025-10-15', description: 'Rebuild core mobile journeys with refreshed UI kit, performance budget, and offline mode.', tags: ['Mobile', 'Design System'], team: ['Theresa Webb', 'Eleanor Pena'], lastUpdated: '', summary_link: '' },
+          { id: 'P-515', name: 'Payments Resilience', owner: 'Darrell Steward', status: 'Active', stage: 'ER', model: 'Model-P', sku: 'SKU-005', startDate: '2025-03-05', endDate: '2025-09-12', description: 'Multi-region failover and adaptive routing to improve authorization rates in APAC.', tags: ['Payments', 'SRE'], team: ['Darrell Steward', 'Annette Black', 'Albert Flores'], lastUpdated: '', summary_link: '' },
+          { id: 'P-622', name: 'Sustainability Reporting', owner: 'Annette Black', status: 'Completed', stage: 'Launch', model: 'Model-SR', sku: 'SKU-006', startDate: '2025-01-15', endDate: '2025-06-30', description: 'Publish near real-time CO2 impact dashboards and ESG data pipeline for quarterly filings.', tags: ['ESG', 'Regulatory'], team: ['Annette Black', 'Cameron Williamson'], lastUpdated: '', summary_link: '' }
+        ];
+
+        const activeSelects = new Set();
+        const filterSelects = {};
+        const modalSelects = {};
+
+        function debounce(fn, wait) {
+          let timer;
+          return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn.apply(this, args), wait);
+          };
+        }
+
+        function closeAll(except) {
+          activeSelects.forEach(instance => {
+            if (instance !== except) {
+              instance.close(false);
+            }
+          });
+        }
+
+        $doc.on('click', event => {
+          activeSelects.forEach(instance => {
+            if (!instance.root.contains(event.target)) {
+              instance.close(false);
+            }
+          });
+        });
+
+        $doc.on('keydown', event => {
+          if (event.key === 'Escape') {
+            closeAll();
+          }
+        });
+
+        function createSelect($root, options = {}) {
+          const $element = $root instanceof $ ? $root : $($root);
+          if (!$element.length) return null;
+
+          const config = $.extend({ placeholder: 'Select', onChange: $.noop, hiddenInput: null }, options);
+          const $selected = $element.find('.selected');
+          const $options = $element.find('.options').attr('role', 'listbox');
+          $selected.attr({ 'aria-haspopup': 'listbox', 'aria-expanded': $element.attr('aria-expanded') || 'false' });
+
+          const $hidden = config.hiddenInput ? $(config.hiddenInput) : null;
+          const placeholder = config.placeholder || $.trim($selected.text()) || 'Select';
+          let list = [];
+          let currentValue = '';
+
+          function syncSelected() {
+            const active = list.find(item => item.value === currentValue);
+            const label = active ? active.label : (currentValue || placeholder);
+            $selected.text(label);
+            $options.children('li').each(function () {
+              const $li = $(this);
+              const isActive = $li.data('value') === currentValue;
+              $li.toggleClass('is-active', isActive).attr('aria-selected', isActive);
+            });
+          }
+
+          function assignValue(value, notify = true) {
+            currentValue = value ?? '';
+            if ($hidden && $hidden.length) {
+              $hidden.val(currentValue);
+            }
+            syncSelected();
+            if (notify) {
+              config.onChange.call($element[0], currentValue);
+            }
+          }
+
+          function focusOption(index) {
+            const $items = $options.children('li');
+            if (!$items.length) return;
+            const safeIndex = Math.max(0, Math.min(index, $items.length - 1));
+            $items.eq(safeIndex).focus();
+          }
+
+          function open(force) {
+            const isOpen = $element.hasClass('open');
+            const shouldOpen = force === undefined ? !isOpen : force;
+            if (shouldOpen === isOpen) return;
+            if (shouldOpen) {
+              closeAll(api);
+              $element.addClass('open').attr('aria-expanded', 'true');
+              $selected.attr('aria-expanded', 'true');
+              activeSelects.add(api);
+            } else {
+              $element.removeClass('open').attr('aria-expanded', 'false');
+              $selected.attr('aria-expanded', 'false');
+              activeSelects.delete(api);
+            }
+          }
+
+          function close(focusBack = false) {
+            open(false);
+            if (focusBack) {
+              $selected.focus();
+            }
+          }
+
+          function setOptions(options, value) {
+            list = Array.isArray(options) ? options.map(opt => ($.isPlainObject(opt) ? opt : { value: opt, label: opt })) : [];
+            if (value && !list.some(opt => opt.value === value)) {
+              list.push({ value, label: value });
+            }
+            $options.empty();
+            list.forEach(opt => {
+              $('<li>', {
+                text: opt.label,
+                'data-value': opt.value,
+                role: 'option',
+                tabindex: -1
+              }).appendTo($options);
+            });
+            assignValue(value ?? '', false);
+          }
+
+          $selected.on('click', () => open());
+          $selected.on('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              open();
+            }
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              close(true);
+            }
+            if (event.key === 'ArrowDown') {
+              event.preventDefault();
+              open(true);
+              focusOption(0);
+            }
+            if (event.key === 'ArrowUp') {
+              event.preventDefault();
+              open(true);
+              focusOption($options.children('li').length - 1);
+            }
+          });
+
+          $options.on('click', 'li', function () {
+            assignValue($(this).data('value'));
+            close(true);
+          });
+
+          $options.on('keydown', 'li', function (event) {
+            const $item = $(this);
+            const index = $item.index();
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              assignValue($item.data('value'));
+              close(true);
+            }
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              close(true);
+            }
+            if (event.key === 'ArrowDown') {
+              event.preventDefault();
+              focusOption(index + 1);
+            }
+            if (event.key === 'ArrowUp') {
+              event.preventDefault();
+              focusOption(index - 1);
+            }
+          });
+
+          const api = {
+            root: $element[0],
+            setOptions,
+            setValue(value) {
+              if (value && !list.some(opt => opt.value === value)) {
+                setOptions([...list, { value, label: value }], value);
+                return;
+              }
+              assignValue(value, false);
+            },
+            close
+          };
+
+          return api;
+        }
+
+        filterSelects.status = createSelect(els.$statusSelect, {
+          placeholder: els.$statusSelect.data('placeholder') || 'All statuses',
+          onChange(value) {
+            state.filters.status = value;
+            applyFilters();
+          }
+        });
+
+        filterSelects.owner = createSelect(els.$ownerSelect, {
+          placeholder: els.$ownerSelect.data('placeholder') || 'All owners',
+          onChange(value) {
+            state.filters.owner = value;
+            applyFilters();
+          }
+        });
+
+        filterSelects.sort = createSelect(els.$sortSelect, {
+          placeholder: els.$sortSelect.data('placeholder') || 'Sort by',
+          onChange(value) {
+            state.filters.sort = value || 'name-asc';
+            applyFilters();
+          }
+        });
+
+        initModalSelects();
+
+        const handleSearchInput = debounce(value => {
+          state.filters.search = (value ?? '').toString().trim().toLowerCase();
+          applyFilters();
+        }, 200);
+
+        els.$search.on('input', function () {
+          handleSearchInput(this.value);
+        });
+
+        els.$tableBody.on('click', 'tr[data-project-id]', handleRowClick);
+        els.$detailClose.on('click', closeDetailDrawer);
+        $doc.on('click', '#project-detail-edit-btn', handleDetailEditClick);
+        els.$addBtn.on('click', () => openModal());
+        els.$exportBtn.on('click', exportCsv);
+        els.$refreshBtn.on('click', () => fetchProjects(true));
+        els.$modal.on('click', event => {
+          if (event.target === els.$modal[0]) {
+            closeModal();
+          }
+        });
+        els.$modalForm.on('submit', handleFormSubmit);
+        els.$modalForm.on("input", "[name='summary']", autosizeSummaryField);
+        $('.project-modal-close').on('click', closeModal);
+
+        fetchProjects();
+
+        // Toolbar hide/show on scroll
+        let scrollTimer;
+        const $toolbar = $('#project-toolbar');
+        const $contentWrapper = $('#contentWrapper');
+        const toolbarOffset = $toolbar.offset().top;
+
+        $contentWrapper.on('scroll', function() {
+          const scrollTop = $(this).scrollTop();
+
+          if (scrollTop > toolbarOffset) {
+            $toolbar.addClass('is-sticky');
+            const offsetValue = Math.ceil($toolbar.outerHeight()) + 16;
+            document.documentElement.style.setProperty('--detail-drawer-offset', `${offsetValue}px`);
+            if (!$toolbar.hasClass('is-hidden')) {
+              $toolbar.addClass('is-hidden');
+            }
+          } else {
+            $toolbar.removeClass('is-sticky is-hidden');
+            document.documentElement.style.setProperty('--detail-drawer-offset', '1.5rem');
+          }
+          clearTimeout(scrollTimer);
+          scrollTimer = setTimeout(function() {
+            if ($toolbar.hasClass('is-sticky')) {
+              $toolbar.removeClass('is-hidden');
+            }
+          }, 250); // 250ms 後顯示
+        });
+
+        function initModalSelects() {
+          if (!modalSelects.status) {
+            modalSelects.status = createSelect(els.$modalStatusSelect, {
+              placeholder: els.$modalStatusSelect.data("placeholder") || "Status",
+              hiddenInput: els.$modalStatusHidden,
+              onChange(value) {
+                els.$modalStatusHidden.val(value);
+              }
+            });
+          }
+
+          if (!modalSelects.stage) {
+            modalSelects.stage = createSelect(els.$modalStageSelect, {
+              placeholder: els.$modalStageSelect.data("placeholder") || "Stage",
+              hiddenInput: els.$modalStageHidden,
+              onChange(value) {
+                els.$modalStageHidden.val(value);
+              }
+            });
+          }
+
+          syncModalStatusOptions();
+          syncModalStageOptions();
+        }
+
+        function fetchProjects(force = false) {
+          setLoading(true);
+          hideBanner();
+
+          if (!force && state.projects.length) {
+            setLoading(false);
+            return;
+          }
+
+          $.ajax({ url: endpoint, dataType: 'json', cache: false })
+            .done(payload => {
+              const extracted = extractProjects(payload);
+              if (!extracted.length) throw new Error('empty');
+              state.projects = extracted.map(normalizeProject);
+              state.fallbackNotified = false;
+            })
+            .fail(() => {
+              state.projects = fallbackProjects.map(normalizeProject);
+              if (!state.fallbackNotified) {
+                showBanner();
+                state.fallbackNotified = true;
+              }
+            })
+            .always(() => {
+              refreshFilterOptions();
+              applyFilters();
+              renderStats();
+              setLoading(false);
+            });
+        }
+
+        function extractProjects(payload) {
+          if (!payload) return [];
+          if (Array.isArray(payload)) return payload;
+          if (Array.isArray(payload.projects)) return payload.projects;
+          if (Array.isArray(payload.data)) return payload.data;
+          return [];
+        }
+
+        function refreshFilterOptions() {
+          const uniqueStatuses = [...new Set(state.projects.map(project => project.status).filter(Boolean))].sort();
+          const uniqueOwners = [...new Set(state.projects.map(project => project.owner).filter(Boolean))].sort();
+          const uniqueStages = [...new Set(state.projects.map(project => project.stage).filter(Boolean))].sort();
+
+          STATUS_FORM_OPTIONS = uniqueStatuses;
+          STAGE_FORM_OPTIONS = uniqueStages;
+
+          const statusOptions = [{ value: '', label: 'All statuses' }, ...uniqueStatuses.map(value => ({ value, label: value }))];
+          const ownerOptions = [{ value: '', label: 'All owners' }, ...uniqueOwners.map(value => ({ value, label: value }))];
+
+          filterSelects.status?.setOptions(statusOptions, state.filters.status);
+          filterSelects.owner?.setOptions(ownerOptions, state.filters.owner);
+          filterSelects.sort?.setOptions(SORT_OPTIONS, state.filters.sort || 'name-asc');
+
+          syncModalStatusOptions();
+          syncModalStageOptions();
+        }
+
+        function syncModalStatusOptions() {
+          const statuses = STATUS_FORM_OPTIONS;
+          const current = els.$modalStatusHidden.val();
+          const fallback = statuses[0] || '';
+          const nextValue = current && statuses.includes(current) ? current : fallback;
+
+          if (modalSelects.status) {
+            modalSelects.status.setOptions(statuses.map(value => ({ value, label: value })), nextValue);
+          }
+
+          if (els.$modalStatusHidden && els.$modalStatusHidden.length) {
+            els.$modalStatusHidden.val(nextValue);
+          }
+        }
+
+        function syncModalStageOptions() {
+          const stages = STAGE_FORM_OPTIONS;
+          const current = els.$modalStageHidden.val();
+          const fallback = stages[0] || '';
+          const nextValue = current && stages.includes(current) ? current : fallback;
+
+          if (modalSelects.stage) {
+            modalSelects.stage.setOptions(stages.map(value => ({ value, label: value })), nextValue);
+          }
+
+          if (els.$modalStageHidden && els.$modalStageHidden.length) {
+            els.$modalStageHidden.val(nextValue);
+          }
+        }
+        function applyFilters() {
+
+          const { search, status, owner, sort } = state.filters;
+          const query = search || '';
+
+          let result = state.projects.filter(project => {
+            const matchesStatus = !status || project.status === status;
+            const matchesOwner = !owner || project.owner === owner;
+            const haystack = [project.name, project.owner, project.customer, project.stage, project.summaryLink, ...(project.tags || [])]
+              .filter(Boolean)
+              .map(value => value.toLowerCase());
+            const matchesSearch = !query || haystack.some(value => value.includes(query));
+            return matchesStatus && matchesOwner && matchesSearch;
+          });
+
+          result = sortProjects(result, sort);
+          state.filtered = result;
+          renderTable();
+          toggleEmptyState(result.length === 0);
+
+          if (state.selectedId && !result.some(project => project.id === state.selectedId)) {
+            closeDetailDrawer();
+          } else if (state.selectedId) {
+            openDetailDrawer(state.selectedId);
+          }
+        }
+
+        function sortProjects(list, sort) {
+          const sorted = [...list];
+          const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+          switch (sort) {
+            case 'start-desc':
+              return sorted.sort((a, b) => new Date(b.startDate || 0) - new Date(a.startDate || 0));
+            case 'start-asc':
+              return sorted.sort((a, b) => new Date(a.startDate || 0) - new Date(b.startDate || 0));
+            case 'status':
+              return sorted.sort((a, b) => a.status.localeCompare(b.status));
+            case 'id-asc':
+              return sorted.sort((a, b) => collator.compare(normalizeId(a.id), normalizeId(b.id)));
+            case 'id-desc':
+              return sorted.sort((a, b) => collator.compare(normalizeId(b.id), normalizeId(a.id)));
+            case 'name-asc':
+            default:
+              return sorted.sort((a, b) => a.name.localeCompare(b.name));
+          }
+        }
+
+        function renderTable() {
+          const rows = state.filtered.map(project => {
+            const statusClass = statusBadge[project.status] || 'bg-gray-200 text-gray-700';
+            const stageClass = stageBadge[project.stage] || 'bg-gray-200 text-gray-700';
+            const start = project.startDate ? formatDate(project.startDate) : 'TBD';
+            const end = project.endDate ? formatDate(project.endDate) : 'TBD';
+            const customer = project.customer || project.client || '';
+            const customerLabel = customer ? escapeHtml(customer) : 'N/A';
+            const tags = (project.tags || []).slice(0, 3).map(tag => `<span class="rounded-full bg-[#eaedf1] px-2 py-[2px] text-[10px] text-[#5c748a]">${escapeHtml(tag)}</span>`).join('');
+            const isSelected = state.selectedId === project.id;
+            const rowClasses = [
+              'project-row',
+              'group',
+              'hover:bg-[#f7f9fc]',
+              isSelected ? 'is-selected' : ''
+            ].filter(Boolean).join(' ');
+
+
+            return `
+              <tr class="${rowClasses}" data-project-id="${escapeHtml(project.id)}" aria-selected="${isSelected}">
+                <td class="whitespace-nowrap px-4 py-3">
+                  <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-[#101518]">${escapeHtml(project.name)}</span>
+                    <span class="text-xs text-[#5c748a]">${escapeHtml(project.id)}</span>
+                  </div>
+                  ${tags ? `<div class="mt-1 flex flex-wrap gap-1">${tags}</div>` : ''}
+                </td>
+                <td class="whitespace-nowrap px-4 py-3 text-xs text-[#5c748a]">${escapeHtml(project.model)}</td>
+                <td class="whitespace-nowrap px-4 py-3 text-xs text-[#5c748a]">${escapeHtml(project.sku)}</td>
+                <td class="whitespace-nowrap px-4 py-3 text-xs text-[#5c748a]">${customerLabel}</td>
+                <td class="whitespace-nowrap px-4 py-3 text-xs text-[#5c748a]">${escapeHtml(project.owner)}</td>
+                <td class="whitespace-nowrap px-4 py-3">
+                  <div class="flex flex-col gap-1">
+                    <span class="inline-flex items-center justify-center rounded-full px-2 py-[2px] text-xs font-medium ${statusClass}">${escapeHtml(project.status)}</span>
+                    <span class="inline-flex items-center justify-center rounded-full px-2 py-[2px] text-[10px] ${stageClass}">${escapeHtml(project.stage)}</span>
+                  </div>
+                </td>
+                <td class="whitespace-nowrap px-4 py-3 text-sm text-[#5c748a]">
+                  <div class="flex flex-col">
+                    <span class="text-xs text-[#5c748a]">${start} &rarr; ${end}</span>
+                    ${renderTimelineChip(project)}
+                  </div>
+                </td>
+              </tr>`;
+          });
+
+          els.$tableBody.html(rows.join(''));
+        }
+
+        function renderTimelineChip(project) {
+          if (!project.startDate || !project.endDate) return '';
+          const today = new Date();
+          const start = new Date(project.startDate);
+          const end = new Date(project.endDate);
+          const total = end - start;
+          if (Number.isNaN(total) || total <= 0) return '';
+          const elapsed = Math.min(Math.max(today - start, 0), total);
+          const percentage = Math.round((elapsed / total) * 100);
+          return `<span class="text-[10px] text-[#94a3b8]">${percentage}% of timeline elapsed</span>`;
+        }
+
+        function renderProjectSummary(project) {
+          const $summary = els.$detailContent.find('[data-summary]');
+          if (!$summary.length) return;
+          const link = resolveSummaryLink(project.summaryLink || project.summary_link);
+          if (!link) {
+            $summary.html('<p class="text-xs text-[#5c748a]">No summary yet.</p>');
+            return;
+          }
+
+          fetch(link, { cache: 'no-store' })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Failed to load summary');
+              }
+              return response.text();
+            })
+            .then(markdown => {
+              let html = markdown;
+              if (typeof marked === 'function') {
+                html = typeof marked.parse === 'function' ? marked.parse(markdown) : marked(markdown);
+              } else if (typeof marked === 'object' && marked !== null && typeof marked.parse === 'function') {
+                html = marked.parse(markdown);
+              } else {
+                html = markdown.replace(/\n/g, '<br>');
+              }
+              $summary.html(html);
+            })
+            .catch(() => {
+              $summary.html('<p class="text-xs text-red-600">Unable to load summary.</p>');
+            });
+        }
+        function autosizeSummaryField(event) {
+          const $modalForm = els.$modalForm;
+          if (!$modalForm?.length) return;
+
+          const summarySelector = "[name='summary']";
+          const locateSummary = element => {
+            if (!(element instanceof HTMLElement)) return null;
+            if (element.matches?.(summarySelector)) return element;
+            return element.closest?.(summarySelector) || null;
+          };
+
+          let field = null;
+
+          if (event) {
+            field = locateSummary(event.target) || locateSummary(event.currentTarget);
+          }
+
+          if (!field) {
+            field = $modalForm.find(summarySelector)[0] || null;
+          }
+
+          if (!(field instanceof HTMLElement)) return;
+
+          field.style.height = 'auto';
+          const computed = window.getComputedStyle(field);
+          const lineHeight = parseFloat(computed.lineHeight) || parseFloat(computed.fontSize) || 20;
+          const padding = (parseFloat(computed.paddingTop) || 0) + (parseFloat(computed.paddingBottom) || 0);
+          const border = (parseFloat(computed.borderTopWidth) || 0) + (parseFloat(computed.borderBottomWidth) || 0);
+          const minLines = 4;
+          const minHeight = lineHeight * minLines + padding + border;
+          const newHeight = Math.max(field.scrollHeight + border, minHeight);
+
+          field.style.height = `${Math.ceil(newHeight)}px`;
+        }
+
+        function loadSummaryForEditing(project) {
+          const $summaryField = els.$modalForm.find("[name='summary']");
+          autosizeSummaryField();
+          if (!$summaryField.length) return;
+
+          $summaryField.val('');
+
+          const link = project ? resolveSummaryLink(project.summaryLink || project.summary_link) : '';
+          if (!link) {
+            return;
+          }
+
+          fetch(link, { cache: 'no-store' })
+            .then(response => (response.ok ? response.text() : ''))
+            .then(markdown => {
+              if (typeof markdown === 'string') {
+                $summaryField.val(markdown);
+                autosizeSummaryField();
+              }
+            })
+            .catch(() => {});
+        }
+
+        function renderStats() {
+          const total = state.projects.length;
+          const active = state.projects.filter(project => project.status === 'Active').length;
+          const atRisk = state.projects.filter(project => project.status === 'At Risk' || project.stage === 'At Risk' || project.stage === 'Blocked').length;
+          const upcoming = state.projects.filter(project => {
+            if (!project.startDate) return false;
+            const diff = (new Date(project.startDate) - new Date()) / (1000 * 60 * 60 * 24);
+            return diff >= 0 && diff <= 30;
+          }).length;
+
+          els.stats.$total.text(total);
+          els.stats.$active.text(active);
+          els.stats.$risk.text(atRisk);
+          els.stats.$upcoming.text(upcoming);
+        }
+
+        function toggleEmptyState(isEmpty) {
+          els.$empty.toggleClass('hidden', !isEmpty);
+        }
+
+        function setLoading(isLoading) {
+          els.$loading.toggleClass('hidden', !isLoading);
+          els.$tableBody.closest('table').toggleClass('opacity-40', isLoading);
+        }
+
+        function showBanner() {
+          els.$banner.removeClass('hidden');
+        }
+
+        function hideBanner() {
+          els.$banner.addClass('hidden');
+        }
+
+        function handleRowClick(event) {
+          if ($(event.target).closest('button[data-action]').length) {
+            return;
+          }
+          const projectId = $(event.currentTarget).data('project-id');
+          if (!projectId) return;
+          openDetailDrawer(String(projectId));
+        }
+
+        function handleDetailEditClick(event) {
+          const $button = $(event.currentTarget);
+          const projectId = $button.data('project-id');
+          if (!projectId) return;
+          openModal(String(projectId));
+        }
+
+
+        function openDetailDrawer(projectId) {
+          const project = state.projects.find(item => item.id === projectId);
+          if (!project) return;
+
+          collapseSidebar();
+          state.selectedId = projectId;
+          renderTable();
+          els.$detailDrawer.removeClass('hidden').removeAttr('hidden').css('display', 'flex');
+          els.$detailTitle.text(project.name);
+          els.$detailSubtitle.text(`${project.owner} - ${project.status}`);
+
+          const customer = project.customer || project.client || '';
+          const customerLabel = customer ? escapeHtml(customer) : 'N/A';
+          const summary = [
+            {
+              label: 'Status & Stage',
+              value: `<span class="mr-2 inline-flex items-center rounded-full px-2 py-[2px] text-xs font-medium ${(statusBadge[project.status] || 'bg-gray-200 text-gray-700')}">${escapeHtml(project.status)}</span>` +
+                `<span class="inline-flex items-center rounded-full px-2 py-[2px] text-[10px] ${(stageBadge[project.stage] || 'bg-gray-200 text-gray-700')}">${escapeHtml(project.stage)}</span>`
+            },
+            { label: 'Customer', value: customerLabel },
+            { label: 'Model / SKU', value: `${escapeHtml(project.model)} / ${escapeHtml(project.sku)}` },
+            { label: 'Timeline', value: `${project.startDate ? formatDate(project.startDate) : 'TBD'} &rarr; ${project.endDate ? formatDate(project.endDate) : 'TBD'}` },
+            { label: 'Last updated', value: project.lastUpdated ? formatDateTime(project.lastUpdated) : 'N/A' }
+          ];
+
+          const summaryHtml = summary.map(item => `
+            <div class="flex justify-between gap-4 text-xs">
+              <span class="text-[#5c748a]">${item.label}</span>
+              <span class="text-right text-[#101518]">${item.value}</span>
+            </div>`).join('');
+
+          const tags = project.tags && project.tags.length
+            ? `<div class="flex flex-wrap gap-2">${project.tags.map(tag => `<span class="rounded-full bg-[#eaedf1] px-3 py-1 text-xs text-[#5c748a]">${escapeHtml(tag)}</span>`).join('')}</div>`
+            : '<p class="text-xs text-[#5c748a]">No tags yet.</p>';
+
+          const team = project.team && project.team.length
+            ? `<ul class="list-disc pl-4 text-xs">${project.team.map(member => `<li>${escapeHtml(member)}</li>`).join('')}</ul>`
+            : '<p class="text-xs text-[#5c748a]">Assign collaborators to keep everyone aligned.</p>';
+
+          const summarySection = buildSummarySection(project);
+          const detailHtml = `
+
+            <div class="flex flex-col gap-3 rounded-2xl bg-[#f7f9fc] p-4">${summaryHtml}</div>
+            ${summarySection}
+            <div class="flex flex-col gap-2">
+              <h4 class="text-sm font-semibold text-[#101518]">Tags</h4>
+              ${tags}
+            </div>
+            <div class="flex flex-col gap-2">
+              <h4 class="text-sm font-semibold text-[#101518]">Core team</h4>
+              ${team}
+            </div>
+            <div class="flex justify-end pt-2">
+              <button id="project-detail-edit-btn" data-project-id="${escapeHtml(project.id)}" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-transparent bg-[#2563eb] px-5 py-2 text-sm font-semibold text-white hover:bg-[#1d4ed8]">
+                <i class="fa-regular fa-pen-to-square"></i>
+                Edit project
+              </button>
+            </div>
+          `;
+          els.$detailContent.html(detailHtml);
+          renderProjectSummary(project);
+        }
+
+        function closeDetailDrawer() {
+          state.selectedId = null;
+          els.$detailDrawer.addClass('hidden').attr('hidden', 'hidden').css('display', 'none');
+          expandSidebar();
+          renderTable();
+        }
+
+        function openModal(projectId) {
+          initModalSelects();
+          const editing = projectId ? state.projects.find(project => project.id === projectId) : null;
+          state.editingId = editing ? editing.id : null;
+
+          els.$modalTitle.text(editing ? 'Edit project' : 'New project');
+          els.$modalForm[0].reset();
+          autosizeSummaryField();
+
+          const defaultStatus = STATUS_FORM_OPTIONS[0] || '';
+          const defaultStage = STAGE_FORM_OPTIONS[0] || '';
+          els.$modalStatusHidden.val(defaultStatus);
+          els.$modalStageHidden.val(defaultStage);
+          modalSelects.status?.setValue(defaultStatus);
+          modalSelects.stage?.setValue(defaultStage);
+
+          if (editing) {
+            setFormValue('name', editing.name);
+            setFormValue('owner', editing.owner);
+            setFormValue('model', editing.model);
+            setFormValue('customer', editing.customer || editing.client || '');
+            setFormValue('status', editing.status);
+            setFormValue('stage', editing.stage);
+            setFormValue('startDate', editing.startDate);
+            setFormValue('endDate', editing.endDate);
+            setFormValue('tags', (editing.tags || []).join(', '));
+            setFormValue('team', (editing.team || []).join(', '));
+            setFormValue('summary', '');
+            setFormValue('sku', editing.sku);
+            loadSummaryForEditing(editing);
+          }
+
+
+          els.$modal.removeClass('hidden');
+        }
+
+        function closeModal() {
+          if (!els.$modal.hasClass('hidden')) {
+            els.$modal.addClass('hidden');
+          }
+          state.editingId = null;
+          closeAll();
+        }
+
+        function setFormValue(name, value) {
+          const $field = els.$modalForm.find(`[name="${name}"]`);
+          if (!$field.length) return;
+          $field.val(value ?? '');
+          if (name === 'summary') { autosizeSummaryField(); }
+          if (name === 'status') {
+            modalSelects.status?.setValue($field.val());
+          }
+          if (name === 'stage') {
+            modalSelects.stage?.setValue($field.val());
+          }
+        }
+        function handleFormSubmit(event) {
+          event.preventDefault();
+          const formElement = els.$modalForm[0];
+          if (!formElement) return;
+
+          const formData = new FormData(formElement);
+          const editingId = state.editingId ? String(state.editingId) : null;
+
+          if (editingId) {
+            formData.set('id', editingId);
+          }
+
+          const payload = Object.fromEntries(formData.entries());
+          if (typeof payload.summary === 'string') {
+            payload.summary = payload.summary.trim();
+          }
+
+          const $submit = els.$modalSubmit;
+          const originalText = $submit.text();
+
+          $submit.prop('disabled', true).text('Saving...');
+
+          $.ajax({
+            url: saveEndpoint,
+            method: 'POST',
+            data: payload,
+            dataType: 'json'
+          })
+            .done(response => {
+              if (!response || !response.project) {
+                alert('Unexpected response from the server.');
+                return;
+              }
+
+              const saved = normalizeProject(response.project);
+              const savedId = String(saved.id);
+              const existingIndex = state.projects.findIndex(project => String(project.id) === savedId);
+              const normalizedSummaryLink = saved.summaryLink || '';
+              const rawSummaryLink = saved.summary_link || '';
+
+              if (existingIndex !== -1) {
+                const updated = { ...state.projects[existingIndex], ...saved };
+                updated.summary_link = rawSummaryLink || normalizedSummaryLink;
+                state.projects[existingIndex] = updated;
+              } else {
+                state.projects.unshift({ ...saved, summary_link: rawSummaryLink || normalizedSummaryLink });
+              }
+
+
+              refreshFilterOptions();
+              applyFilters();
+              renderStats();
+
+              if (state.selectedId && state.selectedId === (editingId || savedId)) {
+                state.selectedId = savedId;
+                openDetailDrawer(savedId);
+              }
+
+              closeModal();
+            })
+            .fail(xhr => {
+              const message = xhr.responseJSON && xhr.responseJSON.error
+                ? xhr.responseJSON.error
+                : 'Unable to save project. Please try again.';
+              alert(message);
+            })
+            .always(() => {
+              $submit.prop('disabled', false).text(originalText);
+            });
+        }
+
+        function exportCsv() {
+          if (!state.filtered.length) {
+            alert('Nothing to export. Adjust filters to include projects.');
+            return;
+          }
+
+          const headers = ['ID', 'Name', 'Customer', 'Owner', 'Status', 'Stage', 'Progress', 'Start Date', 'End Date', 'Budget Used', 'Budget Total'];
+          const rows = state.filtered.map(project => [
+            project.id,
+            project.name,
+            project.customer || project.client || '',
+            project.owner,
+            project.status,
+            project.stage,
+            project.progress,
+            project.startDate || '',
+            project.endDate || '',
+            project.budgetUsed ?? '',
+            project.budgetTotal ?? ''
+          ]);
+
+          const csv = [headers, ...rows]
+            .map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(','))
+            .join('\n');
+
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `projects-${new Date().toISOString().slice(0, 10)}.csv`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        }
+
+        function generateId() {
+          const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+          return `P-${Date.now().toString().slice(-5)}${random}`;
+        }
+
+        function normalizeProject(raw) {
+          const toDate = value => {
+            if (!value) return '';
+            const date = new Date(value);
+            return Number.isNaN(date.valueOf()) ? '' : date.toISOString().split('T')[0];
+          };
+
+          const summarySource = raw.summary_link || raw.summaryLink || '';
+          const customer = raw.customer || raw.client || raw.account || raw.company || '';
+          
+          return {
+            id: String(raw.id || raw.project_id || `P-${Date.now()}`),
+            name: raw.name || raw.project_name || 'Untitled project',
+            owner: raw.owner || raw.project_owner || 'Unassigned',
+            status: raw.status || 'Active',
+            model: raw.model || '',
+            sku: raw.sku || '',
+            stage: raw.stage || raw.project_stage || raw.stage_name || raw.health || raw.project_health || raw.risk_level || raw.status || 'Unknown',
+              progress: clamp(Number(raw.progress ?? raw.completion ?? 0), 0, 100),
+              budgetUsed: Number(raw.budgetUsed ?? raw.budget_used ?? 0) || 0,
+              budgetTotal: Number(raw.budgetTotal ?? raw.budget_total ?? raw.budget ?? 0) || 0,
+            startDate: toDate(raw.startDate || raw.start_date || raw.begin_date || raw.beginDate),
+            endDate: toDate(raw.endDate || raw.end_date),
+            summaryLink: resolveSummaryLink(summarySource),
+            summary_link: summarySource,
+            tags: Array.isArray(raw.tags) ? raw.tags : parseCsv(raw.tags),
+            team: Array.isArray(raw.team) ? raw.team : parseCsv(raw.team),
+            lastUpdated: raw.lastUpdated || raw.updated_at || null,
+            client: customer,
+            customer: customer,
+            region: raw.region || ''
+          };
+        }
+
+        function formatDate(value) {
+          if (!value) return 'TBD';
+          const date = new Date(value);
+          if (Number.isNaN(date.valueOf())) return 'TBD';
+          return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
+        }
+
+        function formatDateTime(value) {
+          if (!value) return 'N/A';
+
+          const coerceDate = input => {
+            if (input instanceof Date) {
+              return Number.isNaN(input.valueOf()) ? null : input;
+            }
+
+            if (typeof input === 'number') {
+              const fromNumber = new Date(input);
+              return Number.isNaN(fromNumber.valueOf()) ? null : fromNumber;
+            }
+
+            if (typeof input === 'string') {
+              const trimmed = input.trim();
+              if (!trimmed) return null;
+
+              const candidates = [
+                trimmed,
+                trimmed.replace(' ', 'T'),
+                `${trimmed.replace(' ', 'T')}Z`
+              ];
+
+              for (const candidate of candidates) {
+                const fromString = new Date(candidate);
+                if (!Number.isNaN(fromString.valueOf())) {
+                  return fromString;
+                }
+              }
+
+              return null;
+            }
+
+            return null;
+          };
+
+          const date = coerceDate(value);
+          if (!date) return 'N/A';
+
+          return new Intl.DateTimeFormat('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: false
+          }).format(date);
+        }
+
+
+        function formatCurrency(value) {
+          if (value == null || Number.isNaN(Number(value))) return 'N/A';
+          return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number(value));
+        }
+
+        function clamp(value, min, max) {
+          return Math.min(Math.max(value, min), max);
+        }
+
+
+        function normalizeId(value) {
+          if (value == null) return '';
+          const normalized = String(value).trim();
+          if (!normalized) return '';
+          return normalized.toUpperCase();
+        }
+
+
+        function parseCsv(value) {
+          if (!value) return [];
+          return String(value).split(',').map(item => item.trim()).filter(Boolean);
+        }
+
+
+        function resolveSummaryLink(link) {
+          if (!link) return '';
+          let normalized = String(link).trim();
+          if (!normalized) return '';
+          normalized = normalized.replace(/\\/g, '/');
+
+          if (/^(?:https?:)?\/\//i.test(normalized)) {
+            return normalized;
+          }
+
+          if (normalized.startsWith('/')) {
+            return normalized;
+          }
+
+          while (normalized.startsWith('./')) {
+            normalized = normalized.slice(2);
+          }
+
+          if (normalized.startsWith('../')) {
+            return normalized;
+          }
+
+          const segments = window.location.pathname.split('/');
+          let inPagesDirectory = false;
+          for (let i = 0; i < segments.length; i += 1) {
+            if (segments[i] === 'pages') {
+              inPagesDirectory = true;
+              break;
+            }
+          }
+
+          if (normalized.startsWith('summary/')) {
+            return inPagesDirectory ? '../' + normalized : normalized;
+          }
+
+          if (inPagesDirectory) {
+            return '../summary/' + normalized;
+          }
+
+          return 'summary/' + normalized;
+        }
+
+        function buildSummarySection(project) {
+          const hasLink = !!(project && (project.summaryLink || project.summary_link));
+          const placeholder = hasLink
+            ? 'Loading summary�'
+            : '<p class="text-xs text-[#5c748a]">Document scope and decisions with Markdown.</p>';
+          return `
+            <div class="flex flex-col gap-2">
+              <h4 class="text-sm font-semibold text-[#101518]">Summary</h4>
+              <div class="markdown-body text-sm text-[#101518]" data-summary>${placeholder}</div>
+            </div>
+          `;
+        }
+
+
+        function escapeHtml(value) {
+          return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+      });
+    </script>
   </head>
   <body class="relative flex size-full min-h-screen flex-col bg-gray-50 group/design-root overflow-x-hidden" style='font-family: Inter, "Noto Sans", sans-serif;'>
     <div class="layout-container flex h-full grow flex-col">
 
-<div class="layout-content-container flex flex-1 flex-col gap-6 p-4 text-[#101518]">
-  <header class="flex flex-wrap items-center justify-between gap-3">
-    <div class="flex flex-col gap-1">
-      <h1 class="text-[32px] font-bold leading-tight tracking-[-0.01em]">Project Portfolio</h1>
-      <p class="text-sm text-[#5c748a]">Monitor, filter, and curate every active initiative in one place.</p>
-    </div>
-    <div class="flex flex-wrap items-center gap-2">
-      <button id="projects-export" class="flex items-center gap-2 rounded-xl border border-[#d4dce2] px-4 py-2 text-sm font-medium text-[#101518] hover:border-[#5c748a]">
-        <i class="fa-solid fa-file-arrow-down text-[#5c748a]"></i>
-        Export CSV
-      </button>
-      <button id="projects-refresh" class="flex items-center gap-2 rounded-xl border border-transparent bg-[#101518] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1f2a31]">
-        <i class="fa-solid fa-rotate-right"></i>
-        Refresh
-      </button>
-      <button id="projects-add" class="flex items-center gap-2 rounded-xl border border-transparent bg-[#2563eb] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1d4ed8]">
-        <i class="fa-solid fa-plus"></i>
-        New Project
-      </button>
-    </div>
-  </header>
-
-  <section class="grid w-full gap-3 md:grid-cols-3 xl:grid-cols-4">
-    <article class="rounded-2xl border border-[#d4dce2] bg-white p-4 shadow-sm">
-      <p class="text-xs font-medium uppercase tracking-wide text-[#5c748a]">Total Projects</p>
-      <p id="projects-total" class="mt-2 text-3xl font-bold">0</p>
-      <p class="mt-1 text-xs text-[#5c748a]">All records in portfolio.</p>
-    </article>
-    <article class="rounded-2xl border border-[#d4dce2] bg-white p-4 shadow-sm">
-      <p class="text-xs font-medium uppercase tracking-wide text-[#5c748a]">Active</p>
-      <p id="projects-active" class="mt-2 text-3xl font-bold">0</p>
-      <p class="mt-1 text-xs text-[#5c748a]">Currently tracking milestones.</p>
-    </article>
-    <article class="rounded-2xl border border-[#d4dce2] bg-white p-4 shadow-sm">
-        <p class="text-xs font-medium uppercase tracking-wide text-[#5c748a]">NPI</p>
-      <p id="projects-risk" class="mt-2 text-3xl font-bold text-[#dc2626]">0</p>
-        <p id="projects-non-mp" class="mt-2 text-3xl font-bold text-[#dc2626]" style="display:none;">0</p>
-      <p class="mt-1 text-xs text-[#5c748a]">Projects flagged as off-track.</p>
-    </article>
-    <article class="rounded-2xl border border-[#d4dce2] bg-white p-4 shadow-sm">
-      <p class="text-xs font-medium uppercase tracking-wide text-[#5c748a]">Starting Soon</p>
-      <p id="projects-upcoming" class="mt-2 text-3xl font-bold">0</p>
-      <p class="mt-1 text-xs text-[#5c748a]">Kick-offs in the next 30 days.</p>
-    </article>
-  </section>
-
-  <section id="project-toolbar" class="flex flex-wrap items-center gap-3 rounded-2xl border border-[#d4dce2] bg-white p-4 shadow-sm project-toolbar-sticky">
-    <div class="relative flex min-w-60 flex-1 items-center">
-      <span class="pointer-events-none absolute left-3 text-[#5c748a]">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </span>
-      <input id="projects-search" type="text" placeholder="Search by project name, owner, or tag..." class="h-10 w-full rounded-xl border border-[#d4dce2] bg-[#f7f9fc] pl-10 pr-3 text-sm text-[#101518] focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" />
-    </div>
-    <div class="flex flex-wrap items-center gap-3">
-      <label class="flex flex-col gap-1 text-xs font-medium text-[#5c748a]" style="width: 320px;">
-        Status
-        <div class="custom-select" data-select="status" data-placeholder="All statuses" role="listbox" aria-expanded="false">
-          <div class="selected" tabindex="0">All statuses</div>
-          <ul class="options"></ul>
+    <div class="layout-content-container flex flex-1 flex-col gap-6 p-4 text-[#101518]">
+      <header class="flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-col gap-1">
+          <h1 class="text-[32px] font-bold leading-tight tracking-[-0.01em]">Project Portfolio</h1>
+          <p class="text-sm text-[#5c748a]">Monitor, filter, and curate every active initiative in one place.</p>
         </div>
-      </label>
-      <label class="flex flex-col gap-1 text-xs font-medium text-[#5c748a]" style="width: 320px;">
-        Owner
-        <div class="custom-select" data-select="owner" data-placeholder="All owners" role="listbox" aria-expanded="false">
-          <div class="selected" tabindex="0">All owners</div>
-          <ul class="options"></ul>
-        </div>
-      </label>
-      <label class="flex flex-col gap-1 text-xs font-medium text-[#5c748a]" style="width: 320px;">
-        Sort by
-        <div class="custom-select" data-select="sort" data-placeholder="Sort by" role="listbox" aria-expanded="false">
-          <div class="selected" tabindex="0">Name (A-Z)</div>
-          <ul class="options"></ul>
-        </div>
-      </label>
-    </div>
-  </section>
-
-  <section class="flex flex-col gap-4 xl:flex-row xl:items-start">
-    <div class="flex-1 rounded-2xl border border-[#d4dce2] bg-white shadow-sm">
-      <div class="flex items-center justify-between gap-3 border-b border-[#eaedf1] px-4 py-3">
-        <div>
-          <h2 class="text-base font-semibold">Project Pipeline</h2>
-          <p class="text-xs text-[#5c748a]">Select a row to open quick details.</p>
-        </div>
-        <div id="projects-banner" class="hidden rounded-lg border-l-4 border-[#f97316] bg-[#fff7ed] px-4 py-2 text-xs text-[#9a3412]">
-          Unable to reach the API. Displaying demo data.
-        </div>
-      </div>
-      <div class="relative overflow-x-auto">
-        <table class="min-w-full divide-y divide-[#eaedf1] text-sm">
-          <thead class="bg-[#f5f7fa] uppercase text-xs text-[#5c748a]">
-            <tr>
-              <th class="whitespace-nowrap px-4 py-3 text-left">Project</th>
-              <th class="whitespace-nowrap px-4 py-3 text-left">Model</th>
-              <th class="whitespace-nowrap px-4 py-3 text-left">SKU</th>
-              <th class="whitespace-nowrap px-4 py-3 text-left">Customer</th>
-              <th class="whitespace-nowrap px-4 py-3 text-left">Owner</th>
-              <th class="whitespace-nowrap px-4 py-3 text-left">Status / Stage</th>
-              <th class="whitespace-nowrap px-4 py-3 text-left">Timeline</th>            </tr>
-          </thead>
-          <tbody id="projects-table-body" class="divide-y divide-[#f0f2f5]">
-            <!-- rows injected by script -->
-          </tbody>
-        </table>
-        <div id="projects-loading" class="absolute inset-0 hidden items-center justify-center bg-white/80">
-          <div class="flex items-center gap-3 text-sm text-[#5c748a]">
-            <span class="inline-flex size-3 animate-spin rounded-full border-2 border-[#5c748a]/30 border-t-[#5c748a]"></span>
-            Loading projects
-          </div>
-        </div>
-        <div id="projects-empty" class="hidden px-6 py-12 text-center text-sm text-[#5c748a]">
-          No projects match your filters. Try adjusting the search or reset the dropdowns.
-        </div>
-      </div>
-    </div>
-
-    <aside id="project-detail-drawer" hidden class="hidden w-full max-w-xl flex-col gap-4 rounded-2xl border border-[#d4dce2] bg-white p-5 shadow-lg project-detail-sticky">
-      <div class="flex items-start justify-between gap-3">
-        <div>
-          <p id="project-detail-title" class="text-lg font-semibold">Project details</p>
-          <p id="project-detail-subtitle" class="text-xs text-[#5c748a]">Select a project to inspect milestones and financials.</p>
-        </div>
-        <button id="project-detail-close" class="text-[#5c748a] hover:text-[#101518]" title="Close detail panel">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div id="project-detail-content" class="detail-scroll flex flex-col gap-4 text-sm text-[#5c748a]">
-        <p>Select a project to see more information.</p>
-      </div>
-    </aside>
-  </section>
-</div>
-
-<div id="project-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 p-6">
-  <div class="flex max-h-full w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
-    <div class="flex items-center justify-between gap-3 border-b border-[#eaedf1] px-6 py-4">
-      <div>
-        <h3 id="project-modal-title" class="text-lg font-semibold text-[#101518]">New project</h3>
-        <p class="text-xs text-[#5c748a]">Capture high-level details; you can refine later.</p>
-      </div>
-      <button class="project-modal-close text-[#5c748a] hover:text-[#101518]" title="Close">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-    </div>
-    <form id="project-form" class="grid gap-4 overflow-y-auto px-6 py-6 text-sm text-[#101518]" autocomplete="off">
-      <div class="grid gap-4 md:grid-cols-3">
-        <label class="flex flex-col gap-2">
-          <span class="text-xs font-medium text-[#5c748a]">Project name<span class="text-red-500">*</span></span>
-          <input name="name" type="text" required class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3 focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" />
-        </label>
-        <label class="flex flex-col gap-2">
-          <span class="text-xs font-medium text-[#5c748a]">Project owner<span class="text-red-500">*</span></span>
-          <input name="owner" type="text" required class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3 focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" />
-        </label>
-        <label class="flex flex-col gap-2">
-          <span class="text-xs font-medium text-[#5c748a]">Model</span>
-          <input name="model" type="text" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3 focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" />
-        </label>
-      </div>
-      <div class="grid gap-4 md:grid-cols-3">
-        <label class="flex flex-col gap-2">
-          <span class="text-xs font-medium text-[#5c748a]">Customer</span>
-          <input name="customer" type="text" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3 focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" />
-        </label>
-        <label class="flex flex-col gap-2">
-          <span class="text-xs font-medium text-[#5c748a]">Status</span>
-          <input type="hidden" name="status" value="Active" data-select-hidden="status" />
-          <div class="custom-select" style="width: 100%;" data-select="modal-status" data-placeholder="Status" role="listbox" aria-expanded="false">
-            <div class="selected" tabindex="0">Active</div>
-            <ul class="options"></ul>
-          </div>
-        </label>
-        <label class="flex flex-col gap-2">
-          <span class="text-xs font-medium text-[#5c748a]">Stage</span>
-          <input type="hidden" name="stage" value="" data-select-hidden="stage" />
-          <div class="custom-select" style="width: 100%;" data-select="modal-stage" data-placeholder="Stage" role="listbox" aria-expanded="false">
-            <div class="selected" tabindex="0">Stage</div>
-            <ul class="options"></ul>
-          </div>
-        </label>
-      </div>
-      <div class="grid gap-4 md:grid-cols-3">
-        <label class="flex flex-col gap-2">
-          <span class="text-xs font-medium text-[#5c748a]">Start date</span>
-          <input name="startDate" type="date" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3" />
-        </label>
-        <label class="flex flex-col gap-2">
-          <span class="text-xs font-medium text-[#5c748a]">End date</span>
-          <input name="endDate" type="date" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3" />
-        </label>
-        <label class="flex flex-col gap-2">
-          <span class="text-xs font-medium text-[#5c748a]">SKU</span>
-          <input name="sku" type="text" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3" />
-        </label>
-      </div>
-      <label class="flex flex-col gap-2">
-        <span class="text-xs font-medium text-[#5c748a]">Key tags (comma separated)</span>
-        <input name="tags" type="text" placeholder="Example: Launch, Platform, FY25" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3" />
-      </label>
-      <label class="flex flex-col gap-2">
-        <span class="text-xs font-medium text-[#5c748a]">Core team (comma separated)</span>
-        <input name="team" type="text" placeholder="Add primary collaborators" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3" />
-      </label>
-      <label class="flex flex-col gap-2">
-        <span class="text-xs font-medium text-[#5c748a]">Summary</span>
-        <textarea name="summary" rows="4" class="rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3 py-2 focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" placeholder="Write Markdown summary; headings, lists, and code supported"></textarea>
-      </label>
-      <div class="flex items-center justify-end gap-2 border-t border-[#eaedf1] pt-4">
-        <button type="button" class="project-modal-close rounded-xl border border-[#d4dce2] px-4 py-2 text-sm font-medium text-[#5c748a] hover:text-[#101518]">
-          Cancel
-        </button>
-        <button type="submit" class="rounded-xl border border-transparent bg-[#2563eb] px-5 py-2 text-sm font-semibold text-white hover:bg-[#1d4ed8]">
-          Save project
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script>
-  $(function () {
-    const endpoint = 'api/ajax_all_projects.php';
-    const saveEndpoint = 'api/save_project.php';
-    const $doc = $(document);
-
-    const els = {
-      $search: $('#projects-search'),
-      $statusSelect: $('[data-select="status"]'),
-      $ownerSelect: $('[data-select="owner"]'),
-      $sortSelect: $('[data-select="sort"]'),
-      $tableBody: $('#projects-table-body'),
-      $loading: $('#projects-loading'),
-      $empty: $('#projects-empty'),
-      stats: {
-        $total: $('#projects-total'),
-        $active: $('#projects-active'),
-        $risk: $('#projects-risk'),
-        $risk: $('#projects-non-mp'),
-        $upcoming: $('#projects-upcoming')
-      },
-      $banner: $('#projects-banner'),
-      $detailDrawer: $('#project-detail-drawer'),
-      $detailTitle: $('#project-detail-title'),
-      $detailSubtitle: $('#project-detail-subtitle'),
-      $detailContent: $('#project-detail-content'),
-      $detailClose: $('#project-detail-close'),
-      $addBtn: $('#projects-add'),
-      $exportBtn: $('#projects-export'),
-      $refreshBtn: $('#projects-refresh'),
-      $modal: $('#project-modal'),
-      $modalTitle: $('#project-modal-title'),
-      $modalForm: $('#project-form'),
-      $modalSubmit: $('#project-form button[type="submit"]'),
-      $modalStatusSelect: $('[data-select="modal-status"]'),
-      $modalStageSelect: $('[data-select="modal-stage"]'),
-      $modalStatusHidden: $('[data-select-hidden="status"]'),
-      $modalStageHidden: $('[data-select-hidden="stage"]')
-    };
-
-    const state = {
-      projects: [],
-      filtered: [],
-      filters: {
-        search: '',
-        status: '',
-        owner: '',
-        sort: 'name-asc'
-      },
-      selectedId: null,
-      editingId: null,
-      fallbackNotified: false
-    };
-
-    function collapseSidebar() {
-      const $sidebar = $("#sidebar");
-      if (!$sidebar.length) return;
-
-      const $mainContent = $("#main-content");
-      const isOpen = $sidebar.hasClass("w-60") || !$sidebar.hasClass("w-0");
-      if (!isOpen) return;
-
-      $sidebar.removeClass("w-60 opacity-100").addClass("w-0 opacity-0 overflow-hidden");
-      if ($mainContent.length) {
-        $mainContent.css("margin-left", "0");
-      }
-    }
-
-    function expandSidebar() {
-      const $sidebar = $("#sidebar");
-      if (!$sidebar.length) return;
-
-      const $mainContent = $("#main-content");
-      const isClosed = $sidebar.hasClass("w-0") || !$sidebar.hasClass("w-60");
-      if (!isClosed) return;
-
-      $sidebar.removeClass("w-0 opacity-0 overflow-hidden").addClass("w-60 opacity-100");
-      if ($mainContent.length) {
-        $mainContent.css("margin-left", "15rem");
-      }
-    }
-
-    const statusBadge = {
-      Active: 'bg-emerald-100 text-emerald-700',
-      Verifing: 'bg-amber-100 text-amber-700',
-      Pendding: 'bg-gray-200 text-gray-700',
-      'Line Setup': 'bg-blue-100 text-blue-700',
-      Blocked: 'bg-red-100 text-red-700'
-    };
-
-    const stageBadge = {
-      MP: 'bg-blue-100 text-blue-700',
-      PR: 'bg-purple-100 text-purple-700',
-      PR2: 'bg-purple-100 text-purple-700',
-      ER: 'bg-amber-100 text-amber-700',
-      Discovery: 'bg-sky-100 text-sky-700',
-      Design: 'bg-pink-100 text-pink-700',
-      Launch: 'bg-emerald-100 text-emerald-700',
-      Planning: 'bg-slate-100 text-slate-700',
-      Testing: 'bg-amber-100 text-amber-700',
-      Completed: 'bg-emerald-100 text-emerald-700',
-      'On Track': 'bg-emerald-100 text-emerald-700',
-      'At Risk': 'bg-amber-100 text-amber-700',
-      Blocked: 'bg-red-100 text-red-700'
-    };
-
-    const SORT_OPTIONS = [
-      { value: 'name-asc', label: 'Name (A-Z)' },
-      { value: 'id-asc', label: 'Project ID (low to high)' },
-      { value: 'id-desc', label: 'Project ID (high to low)' },
-      { value: 'start-desc', label: 'Start date (newest)' },
-      { value: 'start-asc', label: 'Start date (oldest)' },
-      { value: 'status', label: 'Status' }
-    ];
-
-    let STATUS_FORM_OPTIONS = [];
-    let STAGE_FORM_OPTIONS = [];
-
-    const fallbackProjects = [
-      { id: 'P-102', name: 'Omnichannel Rollout', owner: 'Jane Cooper', status: 'Active', stage: 'MP', model: 'Model-X1', sku: 'SKU-001', startDate: '2025-06-01', endDate: '2025-09-30', description: 'Deploy unified storefront, inventory, and fulfillment experience across all retail locations.', tags: ['Retail', 'Launch', 'FY25'], team: ['Jane Cooper', 'Darlene Robertson', 'Devon Lane'], lastUpdated: '', summary_link: '' },
-      { id: 'P-204', name: 'Customer 360 Platform', owner: 'Cody Fisher', status: 'At Risk', stage: 'Discovery', model: 'Model-C360', sku: 'SKU-002', startDate: '2025-04-15', endDate: '2025-12-19', description: 'Consolidate support, marketing, and product telemetry to unlock a unified customer model.', tags: ['Platform', 'Data', 'Enterprise'], team: ['Cody Fisher', 'Guy Hawkins', 'Courtney Henry'], lastUpdated: '', summary_link: '' },
-      { id: 'P-311', name: 'Warehouse Automation', owner: 'Leslie Alexander', status: 'Active', stage: 'PR', model: 'Model-WMS', sku: 'SKU-003', startDate: '2025-05-01', endDate: '2025-11-25', description: 'Introduce robotics picking lanes and dynamic slotting to reduce order turnaround by 30%.', tags: ['Operations', 'Robotics'], team: ['Leslie Alexander', 'Marvin McKinney', 'Arlene McCoy'], lastUpdated: '', summary_link: '' },
-      { id: 'P-410', name: 'Next-Gen Mobile App', owner: 'Theresa Webb', status: 'On Hold', stage: 'Design', model: 'Model-M2', sku: 'SKU-004', startDate: '2025-02-10', endDate: '2025-10-15', description: 'Rebuild core mobile journeys with refreshed UI kit, performance budget, and offline mode.', tags: ['Mobile', 'Design System'], team: ['Theresa Webb', 'Eleanor Pena'], lastUpdated: '', summary_link: '' },
-      { id: 'P-515', name: 'Payments Resilience', owner: 'Darrell Steward', status: 'Active', stage: 'ER', model: 'Model-P', sku: 'SKU-005', startDate: '2025-03-05', endDate: '2025-09-12', description: 'Multi-region failover and adaptive routing to improve authorization rates in APAC.', tags: ['Payments', 'SRE'], team: ['Darrell Steward', 'Annette Black', 'Albert Flores'], lastUpdated: '', summary_link: '' },
-      { id: 'P-622', name: 'Sustainability Reporting', owner: 'Annette Black', status: 'Completed', stage: 'Launch', model: 'Model-SR', sku: 'SKU-006', startDate: '2025-01-15', endDate: '2025-06-30', description: 'Publish near real-time CO2 impact dashboards and ESG data pipeline for quarterly filings.', tags: ['ESG', 'Regulatory'], team: ['Annette Black', 'Cameron Williamson'], lastUpdated: '', summary_link: '' }
-    ];
-
-    const activeSelects = new Set();
-    const filterSelects = {};
-    const modalSelects = {};
-
-    function debounce(fn, wait) {
-      let timer;
-      return function (...args) {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn.apply(this, args), wait);
-      };
-    }
-
-    function closeAll(except) {
-      activeSelects.forEach(instance => {
-        if (instance !== except) {
-          instance.close(false);
-        }
-      });
-    }
-
-    $doc.on('click', event => {
-      activeSelects.forEach(instance => {
-        if (!instance.root.contains(event.target)) {
-          instance.close(false);
-        }
-      });
-    });
-
-    $doc.on('keydown', event => {
-      if (event.key === 'Escape') {
-        closeAll();
-      }
-    });
-
-    function createSelect($root, options = {}) {
-      const $element = $root instanceof $ ? $root : $($root);
-      if (!$element.length) return null;
-
-      const config = $.extend({ placeholder: 'Select', onChange: $.noop, hiddenInput: null }, options);
-      const $selected = $element.find('.selected');
-      const $options = $element.find('.options').attr('role', 'listbox');
-      $selected.attr({ 'aria-haspopup': 'listbox', 'aria-expanded': $element.attr('aria-expanded') || 'false' });
-
-      const $hidden = config.hiddenInput ? $(config.hiddenInput) : null;
-      const placeholder = config.placeholder || $.trim($selected.text()) || 'Select';
-      let list = [];
-      let currentValue = '';
-
-      function syncSelected() {
-        const active = list.find(item => item.value === currentValue);
-        const label = active ? active.label : (currentValue || placeholder);
-        $selected.text(label);
-        $options.children('li').each(function () {
-          const $li = $(this);
-          const isActive = $li.data('value') === currentValue;
-          $li.toggleClass('is-active', isActive).attr('aria-selected', isActive);
-        });
-      }
-
-      function assignValue(value, notify = true) {
-        currentValue = value ?? '';
-        if ($hidden && $hidden.length) {
-          $hidden.val(currentValue);
-        }
-        syncSelected();
-        if (notify) {
-          config.onChange.call($element[0], currentValue);
-        }
-      }
-
-      function focusOption(index) {
-        const $items = $options.children('li');
-        if (!$items.length) return;
-        const safeIndex = Math.max(0, Math.min(index, $items.length - 1));
-        $items.eq(safeIndex).focus();
-      }
-
-      function open(force) {
-        const isOpen = $element.hasClass('open');
-        const shouldOpen = force === undefined ? !isOpen : force;
-        if (shouldOpen === isOpen) return;
-        if (shouldOpen) {
-          closeAll(api);
-          $element.addClass('open').attr('aria-expanded', 'true');
-          $selected.attr('aria-expanded', 'true');
-          activeSelects.add(api);
-        } else {
-          $element.removeClass('open').attr('aria-expanded', 'false');
-          $selected.attr('aria-expanded', 'false');
-          activeSelects.delete(api);
-        }
-      }
-
-      function close(focusBack = false) {
-        open(false);
-        if (focusBack) {
-          $selected.focus();
-        }
-      }
-
-      function setOptions(options, value) {
-        list = Array.isArray(options) ? options.map(opt => ($.isPlainObject(opt) ? opt : { value: opt, label: opt })) : [];
-        if (value && !list.some(opt => opt.value === value)) {
-          list.push({ value, label: value });
-        }
-        $options.empty();
-        list.forEach(opt => {
-          $('<li>', {
-            text: opt.label,
-            'data-value': opt.value,
-            role: 'option',
-            tabindex: -1
-          }).appendTo($options);
-        });
-        assignValue(value ?? '', false);
-      }
-
-      $selected.on('click', () => open());
-      $selected.on('keydown', event => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          open();
-        }
-        if (event.key === 'Escape') {
-          event.preventDefault();
-          close(true);
-        }
-        if (event.key === 'ArrowDown') {
-          event.preventDefault();
-          open(true);
-          focusOption(0);
-        }
-        if (event.key === 'ArrowUp') {
-          event.preventDefault();
-          open(true);
-          focusOption($options.children('li').length - 1);
-        }
-      });
-
-      $options.on('click', 'li', function () {
-        assignValue($(this).data('value'));
-        close(true);
-      });
-
-      $options.on('keydown', 'li', function (event) {
-        const $item = $(this);
-        const index = $item.index();
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          assignValue($item.data('value'));
-          close(true);
-        }
-        if (event.key === 'Escape') {
-          event.preventDefault();
-          close(true);
-        }
-        if (event.key === 'ArrowDown') {
-          event.preventDefault();
-          focusOption(index + 1);
-        }
-        if (event.key === 'ArrowUp') {
-          event.preventDefault();
-          focusOption(index - 1);
-        }
-      });
-
-      const api = {
-        root: $element[0],
-        setOptions,
-        setValue(value) {
-          if (value && !list.some(opt => opt.value === value)) {
-            setOptions([...list, { value, label: value }], value);
-            return;
-          }
-          assignValue(value, false);
-        },
-        close
-      };
-
-      return api;
-    }
-
-    filterSelects.status = createSelect(els.$statusSelect, {
-      placeholder: els.$statusSelect.data('placeholder') || 'All statuses',
-      onChange(value) {
-        state.filters.status = value;
-        applyFilters();
-      }
-    });
-
-    filterSelects.owner = createSelect(els.$ownerSelect, {
-      placeholder: els.$ownerSelect.data('placeholder') || 'All owners',
-      onChange(value) {
-        state.filters.owner = value;
-        applyFilters();
-      }
-    });
-
-    filterSelects.sort = createSelect(els.$sortSelect, {
-      placeholder: els.$sortSelect.data('placeholder') || 'Sort by',
-      onChange(value) {
-        state.filters.sort = value || 'name-asc';
-        applyFilters();
-      }
-    });
-
-    initModalSelects();
-
-    const handleSearchInput = debounce(value => {
-      state.filters.search = (value ?? '').toString().trim().toLowerCase();
-      applyFilters();
-    }, 200);
-
-    els.$search.on('input', function () {
-      handleSearchInput(this.value);
-    });
-
-    els.$tableBody.on('click', 'tr[data-project-id]', handleRowClick);
-    els.$detailClose.on('click', closeDetailDrawer);
-    $doc.on('click', '#project-detail-edit-btn', handleDetailEditClick);
-    els.$addBtn.on('click', () => openModal());
-    els.$exportBtn.on('click', exportCsv);
-    els.$refreshBtn.on('click', () => fetchProjects(true));
-    els.$modal.on('click', event => {
-      if (event.target === els.$modal[0]) {
-        closeModal();
-      }
-    });
-    els.$modalForm.on('submit', handleFormSubmit);
-    els.$modalForm.on("input", "[name='summary']", autosizeSummaryField);
-    $('.project-modal-close').on('click', closeModal);
-
-    fetchProjects();
-
-    // Toolbar hide/show on scroll
-    let scrollTimer;
-    const $toolbar = $('#project-toolbar');
-    const $contentWrapper = $('#contentWrapper');
-    const toolbarOffset = $toolbar.offset().top;
-
-    $contentWrapper.on('scroll', function() {
-      const scrollTop = $(this).scrollTop();
-
-      if (scrollTop > toolbarOffset) {
-        $toolbar.addClass('is-sticky');
-        const offsetValue = Math.ceil($toolbar.outerHeight()) + 16;
-        document.documentElement.style.setProperty('--detail-drawer-offset', `${offsetValue}px`);
-        if (!$toolbar.hasClass('is-hidden')) {
-          $toolbar.addClass('is-hidden');
-        }
-      } else {
-        $toolbar.removeClass('is-sticky is-hidden');
-        document.documentElement.style.setProperty('--detail-drawer-offset', '1.5rem');
-      }
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(function() {
-        if ($toolbar.hasClass('is-sticky')) {
-          $toolbar.removeClass('is-hidden');
-        }
-      }, 250); // 250ms 後顯示
-    });
-
-    function initModalSelects() {
-      if (!modalSelects.status) {
-        modalSelects.status = createSelect(els.$modalStatusSelect, {
-          placeholder: els.$modalStatusSelect.data("placeholder") || "Status",
-          hiddenInput: els.$modalStatusHidden,
-          onChange(value) {
-            els.$modalStatusHidden.val(value);
-          }
-        });
-      }
-
-      if (!modalSelects.stage) {
-        modalSelects.stage = createSelect(els.$modalStageSelect, {
-          placeholder: els.$modalStageSelect.data("placeholder") || "Stage",
-          hiddenInput: els.$modalStageHidden,
-          onChange(value) {
-            els.$modalStageHidden.val(value);
-          }
-        });
-      }
-
-      syncModalStatusOptions();
-      syncModalStageOptions();
-    }
-
-    function fetchProjects(force = false) {
-      setLoading(true);
-      hideBanner();
-
-      if (!force && state.projects.length) {
-        setLoading(false);
-        return;
-      }
-
-      $.ajax({ url: endpoint, dataType: 'json', cache: false })
-        .done(payload => {
-          const extracted = extractProjects(payload);
-          if (!extracted.length) throw new Error('empty');
-          state.projects = extracted.map(normalizeProject);
-          state.fallbackNotified = false;
-        })
-        .fail(() => {
-          state.projects = fallbackProjects.map(normalizeProject);
-          if (!state.fallbackNotified) {
-            showBanner();
-            state.fallbackNotified = true;
-          }
-        })
-        .always(() => {
-          refreshFilterOptions();
-          applyFilters();
-          renderStats();
-          setLoading(false);
-        });
-    }
-
-    function extractProjects(payload) {
-      if (!payload) return [];
-      if (Array.isArray(payload)) return payload;
-      if (Array.isArray(payload.projects)) return payload.projects;
-      if (Array.isArray(payload.data)) return payload.data;
-      return [];
-    }
-
-    function refreshFilterOptions() {
-      const uniqueStatuses = [...new Set(state.projects.map(project => project.status).filter(Boolean))].sort();
-      const uniqueOwners = [...new Set(state.projects.map(project => project.owner).filter(Boolean))].sort();
-      const uniqueStages = [...new Set(state.projects.map(project => project.stage).filter(Boolean))].sort();
-
-      STATUS_FORM_OPTIONS = uniqueStatuses;
-      STAGE_FORM_OPTIONS = uniqueStages;
-
-      const statusOptions = [{ value: '', label: 'All statuses' }, ...uniqueStatuses.map(value => ({ value, label: value }))];
-      const ownerOptions = [{ value: '', label: 'All owners' }, ...uniqueOwners.map(value => ({ value, label: value }))];
-
-      filterSelects.status?.setOptions(statusOptions, state.filters.status);
-      filterSelects.owner?.setOptions(ownerOptions, state.filters.owner);
-      filterSelects.sort?.setOptions(SORT_OPTIONS, state.filters.sort || 'name-asc');
-
-      syncModalStatusOptions();
-      syncModalStageOptions();
-    }
-
-    function syncModalStatusOptions() {
-      const statuses = STATUS_FORM_OPTIONS;
-      const current = els.$modalStatusHidden.val();
-      const fallback = statuses[0] || '';
-      const nextValue = current && statuses.includes(current) ? current : fallback;
-
-      if (modalSelects.status) {
-        modalSelects.status.setOptions(statuses.map(value => ({ value, label: value })), nextValue);
-      }
-
-      if (els.$modalStatusHidden && els.$modalStatusHidden.length) {
-        els.$modalStatusHidden.val(nextValue);
-      }
-    }
-
-    function syncModalStageOptions() {
-      const stages = STAGE_FORM_OPTIONS;
-      const current = els.$modalStageHidden.val();
-      const fallback = stages[0] || '';
-      const nextValue = current && stages.includes(current) ? current : fallback;
-
-      if (modalSelects.stage) {
-        modalSelects.stage.setOptions(stages.map(value => ({ value, label: value })), nextValue);
-      }
-
-      if (els.$modalStageHidden && els.$modalStageHidden.length) {
-        els.$modalStageHidden.val(nextValue);
-      }
-    }
-    function applyFilters() {
-
-      const { search, status, owner, sort } = state.filters;
-      const query = search || '';
-
-      let result = state.projects.filter(project => {
-        const matchesStatus = !status || project.status === status;
-        const matchesOwner = !owner || project.owner === owner;
-        const haystack = [project.name, project.owner, project.customer, project.stage, project.summaryLink, ...(project.tags || [])]
-          .filter(Boolean)
-          .map(value => value.toLowerCase());
-        const matchesSearch = !query || haystack.some(value => value.includes(query));
-        return matchesStatus && matchesOwner && matchesSearch;
-      });
-
-      result = sortProjects(result, sort);
-      state.filtered = result;
-      renderTable();
-      toggleEmptyState(result.length === 0);
-
-      if (state.selectedId && !result.some(project => project.id === state.selectedId)) {
-        closeDetailDrawer();
-      } else if (state.selectedId) {
-        openDetailDrawer(state.selectedId);
-      }
-    }
-
-    function sortProjects(list, sort) {
-      const sorted = [...list];
-      const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-      switch (sort) {
-        case 'start-desc':
-          return sorted.sort((a, b) => new Date(b.startDate || 0) - new Date(a.startDate || 0));
-        case 'start-asc':
-          return sorted.sort((a, b) => new Date(a.startDate || 0) - new Date(b.startDate || 0));
-        case 'status':
-          return sorted.sort((a, b) => a.status.localeCompare(b.status));
-        case 'id-asc':
-          return sorted.sort((a, b) => collator.compare(normalizeId(a.id), normalizeId(b.id)));
-        case 'id-desc':
-          return sorted.sort((a, b) => collator.compare(normalizeId(b.id), normalizeId(a.id)));
-        case 'name-asc':
-        default:
-          return sorted.sort((a, b) => a.name.localeCompare(b.name));
-      }
-    }
-
-    function renderTable() {
-      const rows = state.filtered.map(project => {
-        const statusClass = statusBadge[project.status] || 'bg-gray-200 text-gray-700';
-        const stageClass = stageBadge[project.stage] || 'bg-gray-200 text-gray-700';
-        const start = project.startDate ? formatDate(project.startDate) : 'TBD';
-        const end = project.endDate ? formatDate(project.endDate) : 'TBD';
-        const customer = project.customer || project.client || '';
-        const customerLabel = customer ? escapeHtml(customer) : 'N/A';
-        const tags = (project.tags || []).slice(0, 3).map(tag => `<span class="rounded-full bg-[#eaedf1] px-2 py-[2px] text-[10px] text-[#5c748a]">${escapeHtml(tag)}</span>`).join('');
-        const isSelected = state.selectedId === project.id;
-        const rowClasses = [
-          'project-row',
-          'group',
-          'hover:bg-[#f7f9fc]',
-          isSelected ? 'is-selected' : ''
-        ].filter(Boolean).join(' ');
-
-
-        return `
-          <tr class="${rowClasses}" data-project-id="${escapeHtml(project.id)}" aria-selected="${isSelected}">
-            <td class="whitespace-nowrap px-4 py-3">
-              <div class="flex flex-col">
-                <span class="text-sm font-semibold text-[#101518]">${escapeHtml(project.name)}</span>
-                <span class="text-xs text-[#5c748a]">${escapeHtml(project.id)}</span>
-              </div>
-              ${tags ? `<div class="mt-1 flex flex-wrap gap-1">${tags}</div>` : ''}
-            </td>
-            <td class="whitespace-nowrap px-4 py-3 text-xs text-[#5c748a]">${escapeHtml(project.model)}</td>
-            <td class="whitespace-nowrap px-4 py-3 text-xs text-[#5c748a]">${escapeHtml(project.sku)}</td>
-            <td class="whitespace-nowrap px-4 py-3 text-xs text-[#5c748a]">${customerLabel}</td>
-            <td class="whitespace-nowrap px-4 py-3 text-xs text-[#5c748a]">${escapeHtml(project.owner)}</td>
-            <td class="whitespace-nowrap px-4 py-3">
-              <div class="flex flex-col gap-1">
-                <span class="inline-flex items-center justify-center rounded-full px-2 py-[2px] text-xs font-medium ${statusClass}">${escapeHtml(project.status)}</span>
-                <span class="inline-flex items-center justify-center rounded-full px-2 py-[2px] text-[10px] ${stageClass}">${escapeHtml(project.stage)}</span>
-              </div>
-            </td>
-            <td class="whitespace-nowrap px-4 py-3 text-sm text-[#5c748a]">
-              <div class="flex flex-col">
-                <span class="text-xs text-[#5c748a]">${start} &rarr; ${end}</span>
-                ${renderTimelineChip(project)}
-              </div>
-            </td>
-          </tr>`;
-      });
-
-      els.$tableBody.html(rows.join(''));
-    }
-
-    function renderTimelineChip(project) {
-      if (!project.startDate || !project.endDate) return '';
-      const today = new Date();
-      const start = new Date(project.startDate);
-      const end = new Date(project.endDate);
-      const total = end - start;
-      if (Number.isNaN(total) || total <= 0) return '';
-      const elapsed = Math.min(Math.max(today - start, 0), total);
-      const percentage = Math.round((elapsed / total) * 100);
-      return `<span class="text-[10px] text-[#94a3b8]">${percentage}% of timeline elapsed</span>`;
-    }
-
-    function renderProjectSummary(project) {
-      const $summary = els.$detailContent.find('[data-summary]');
-      if (!$summary.length) return;
-      const link = resolveSummaryLink(project.summaryLink || project.summary_link);
-      if (!link) {
-        $summary.html('<p class="text-xs text-[#5c748a]">No summary yet.</p>');
-        return;
-      }
-
-      fetch(link, { cache: 'no-store' })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to load summary');
-          }
-          return response.text();
-        })
-        .then(markdown => {
-          let html = markdown;
-          if (typeof marked === 'function') {
-            html = typeof marked.parse === 'function' ? marked.parse(markdown) : marked(markdown);
-          } else if (typeof marked === 'object' && marked !== null && typeof marked.parse === 'function') {
-            html = marked.parse(markdown);
-          } else {
-            html = markdown.replace(/\n/g, '<br>');
-          }
-          $summary.html(html);
-        })
-        .catch(() => {
-          $summary.html('<p class="text-xs text-red-600">Unable to load summary.</p>');
-        });
-    }
-    function autosizeSummaryField(event) {
-      const $modalForm = els.$modalForm;
-      if (!$modalForm?.length) return;
-
-      const summarySelector = "[name='summary']";
-      const locateSummary = element => {
-        if (!(element instanceof HTMLElement)) return null;
-        if (element.matches?.(summarySelector)) return element;
-        return element.closest?.(summarySelector) || null;
-      };
-
-      let field = null;
-
-      if (event) {
-        field = locateSummary(event.target) || locateSummary(event.currentTarget);
-      }
-
-      if (!field) {
-        field = $modalForm.find(summarySelector)[0] || null;
-      }
-
-      if (!(field instanceof HTMLElement)) return;
-
-      field.style.height = 'auto';
-      const computed = window.getComputedStyle(field);
-      const lineHeight = parseFloat(computed.lineHeight) || parseFloat(computed.fontSize) || 20;
-      const padding = (parseFloat(computed.paddingTop) || 0) + (parseFloat(computed.paddingBottom) || 0);
-      const border = (parseFloat(computed.borderTopWidth) || 0) + (parseFloat(computed.borderBottomWidth) || 0);
-      const minLines = 4;
-      const minHeight = lineHeight * minLines + padding + border;
-      const newHeight = Math.max(field.scrollHeight + border, minHeight);
-
-      field.style.height = `${Math.ceil(newHeight)}px`;
-    }
-
-    function loadSummaryForEditing(project) {
-      const $summaryField = els.$modalForm.find("[name='summary']");
-      autosizeSummaryField();
-      if (!$summaryField.length) return;
-
-      $summaryField.val('');
-
-      const link = project ? resolveSummaryLink(project.summaryLink || project.summary_link) : '';
-      if (!link) {
-        return;
-      }
-
-      fetch(link, { cache: 'no-store' })
-        .then(response => (response.ok ? response.text() : ''))
-        .then(markdown => {
-          if (typeof markdown === 'string') {
-            $summaryField.val(markdown);
-            autosizeSummaryField();
-          }
-        })
-        .catch(() => {});
-    }
-
-    function renderStats() {
-      const total = state.projects.length;
-      const active = state.projects.filter(project => project.status === 'Active').length;
-      const atRisk = state.projects.filter(project => project.status === 'At Risk' || project.stage === 'At Risk' || project.stage === 'Blocked').length;
-      const upcoming = state.projects.filter(project => {
-        if (!project.startDate) return false;
-        const diff = (new Date(project.startDate) - new Date()) / (1000 * 60 * 60 * 24);
-        return diff >= 0 && diff <= 30;
-      }).length;
-
-      els.stats.$total.text(total);
-      els.stats.$active.text(active);
-      els.stats.$risk.text(atRisk);
-      els.stats.$upcoming.text(upcoming);
-    }
-
-    function toggleEmptyState(isEmpty) {
-      els.$empty.toggleClass('hidden', !isEmpty);
-    }
-
-    function setLoading(isLoading) {
-      els.$loading.toggleClass('hidden', !isLoading);
-      els.$tableBody.closest('table').toggleClass('opacity-40', isLoading);
-    }
-
-    function showBanner() {
-      els.$banner.removeClass('hidden');
-    }
-
-    function hideBanner() {
-      els.$banner.addClass('hidden');
-    }
-
-    function handleRowClick(event) {
-      if ($(event.target).closest('button[data-action]').length) {
-        return;
-      }
-      const projectId = $(event.currentTarget).data('project-id');
-      if (!projectId) return;
-      openDetailDrawer(String(projectId));
-    }
-
-    function handleDetailEditClick(event) {
-      const $button = $(event.currentTarget);
-      const projectId = $button.data('project-id');
-      if (!projectId) return;
-      openModal(String(projectId));
-    }
-
-
-    function openDetailDrawer(projectId) {
-      const project = state.projects.find(item => item.id === projectId);
-      if (!project) return;
-
-      collapseSidebar();
-      state.selectedId = projectId;
-      renderTable();
-      els.$detailDrawer.removeClass('hidden').removeAttr('hidden').css('display', 'flex');
-      els.$detailTitle.text(project.name);
-      els.$detailSubtitle.text(`${project.owner} - ${project.status}`);
-
-      const customer = project.customer || project.client || '';
-      const customerLabel = customer ? escapeHtml(customer) : 'N/A';
-      const summary = [
-        {
-          label: 'Status & Stage',
-          value: `<span class="mr-2 inline-flex items-center rounded-full px-2 py-[2px] text-xs font-medium ${(statusBadge[project.status] || 'bg-gray-200 text-gray-700')}">${escapeHtml(project.status)}</span>` +
-            `<span class="inline-flex items-center rounded-full px-2 py-[2px] text-[10px] ${(stageBadge[project.stage] || 'bg-gray-200 text-gray-700')}">${escapeHtml(project.stage)}</span>`
-        },
-        { label: 'Customer', value: customerLabel },
-        { label: 'Model / SKU', value: `${escapeHtml(project.model)} / ${escapeHtml(project.sku)}` },
-        { label: 'Timeline', value: `${project.startDate ? formatDate(project.startDate) : 'TBD'} &rarr; ${project.endDate ? formatDate(project.endDate) : 'TBD'}` },
-        { label: 'Last updated', value: project.lastUpdated ? formatDateTime(project.lastUpdated) : 'N/A' }
-      ];
-
-      const summaryHtml = summary.map(item => `
-        <div class="flex justify-between gap-4 text-xs">
-          <span class="text-[#5c748a]">${item.label}</span>
-          <span class="text-right text-[#101518]">${item.value}</span>
-        </div>`).join('');
-
-      const tags = project.tags && project.tags.length
-        ? `<div class="flex flex-wrap gap-2">${project.tags.map(tag => `<span class="rounded-full bg-[#eaedf1] px-3 py-1 text-xs text-[#5c748a]">${escapeHtml(tag)}</span>`).join('')}</div>`
-        : '<p class="text-xs text-[#5c748a]">No tags yet.</p>';
-
-      const team = project.team && project.team.length
-        ? `<ul class="list-disc pl-4 text-xs">${project.team.map(member => `<li>${escapeHtml(member)}</li>`).join('')}</ul>`
-        : '<p class="text-xs text-[#5c748a]">Assign collaborators to keep everyone aligned.</p>';
-
-      const summarySection = buildSummarySection(project);
-      const detailHtml = `
-
-        <div class="flex flex-col gap-3 rounded-2xl bg-[#f7f9fc] p-4">${summaryHtml}</div>
-        ${summarySection}
-        <div class="flex flex-col gap-2">
-          <h4 class="text-sm font-semibold text-[#101518]">Tags</h4>
-          ${tags}
-        </div>
-        <div class="flex flex-col gap-2">
-          <h4 class="text-sm font-semibold text-[#101518]">Core team</h4>
-          ${team}
-        </div>
-        <div class="flex justify-end pt-2">
-          <button id="project-detail-edit-btn" data-project-id="${escapeHtml(project.id)}" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-transparent bg-[#2563eb] px-5 py-2 text-sm font-semibold text-white hover:bg-[#1d4ed8]">
-            <i class="fa-regular fa-pen-to-square"></i>
-            Edit project
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="projects-export" class="flex items-center gap-2 rounded-xl border border-[#d4dce2] px-4 py-2 text-sm font-medium text-[#101518] hover:border-[#5c748a]">
+            <i class="fa-solid fa-file-arrow-down text-[#5c748a]"></i>
+            Export CSV
+          </button>
+          <button id="projects-refresh" class="flex items-center gap-2 rounded-xl border border-transparent bg-[#101518] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1f2a31]">
+            <i class="fa-solid fa-rotate-right"></i>
+            Refresh
+          </button>
+          <button id="projects-add" class="flex items-center gap-2 rounded-xl border border-transparent bg-[#2563eb] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1d4ed8]">
+            <i class="fa-solid fa-plus"></i>
+            New Project
           </button>
         </div>
-      `;
-      els.$detailContent.html(detailHtml);
-      renderProjectSummary(project);
-    }
+      </header>
 
-    function closeDetailDrawer() {
-      state.selectedId = null;
-      els.$detailDrawer.addClass('hidden').attr('hidden', 'hidden').css('display', 'none');
-      expandSidebar();
-      renderTable();
-    }
+      <section class="grid w-full gap-3 md:grid-cols-3 xl:grid-cols-4">
+        <article class="rounded-2xl border border-[#d4dce2] bg-white p-4 shadow-sm">
+          <p class="text-xs font-medium uppercase tracking-wide text-[#5c748a]">Total Projects</p>
+          <p id="projects-total" class="mt-2 text-3xl font-bold">0</p>
+          <p class="mt-1 text-xs text-[#5c748a]">All records in portfolio.</p>
+        </article>
+        <article class="rounded-2xl border border-[#d4dce2] bg-white p-4 shadow-sm">
+          <p class="text-xs font-medium uppercase tracking-wide text-[#5c748a]">Active</p>
+          <p id="projects-active" class="mt-2 text-3xl font-bold">0</p>
+          <p class="mt-1 text-xs text-[#5c748a]">Currently tracking milestones.</p>
+        </article>
+        <article class="rounded-2xl border border-[#d4dce2] bg-white p-4 shadow-sm">
+            <p class="text-xs font-medium uppercase tracking-wide text-[#5c748a]">NPI</p>
+          <p id="projects-risk" class="mt-2 text-3xl font-bold text-[#dc2626]">0</p>
+            <p id="projects-non-mp" class="mt-2 text-3xl font-bold text-[#dc2626]" style="display:none;">0</p>
+          <p class="mt-1 text-xs text-[#5c748a]">Projects flagged as off-track.</p>
+        </article>
+        <article class="rounded-2xl border border-[#d4dce2] bg-white p-4 shadow-sm">
+          <p class="text-xs font-medium uppercase tracking-wide text-[#5c748a]">Starting Soon</p>
+          <p id="projects-upcoming" class="mt-2 text-3xl font-bold">0</p>
+          <p class="mt-1 text-xs text-[#5c748a]">Kick-offs in the next 30 days.</p>
+        </article>
+      </section>
 
-    function openModal(projectId) {
-      initModalSelects();
-      const editing = projectId ? state.projects.find(project => project.id === projectId) : null;
-      state.editingId = editing ? editing.id : null;
-
-      els.$modalTitle.text(editing ? 'Edit project' : 'New project');
-      els.$modalForm[0].reset();
-      autosizeSummaryField();
-
-      const defaultStatus = STATUS_FORM_OPTIONS[0] || '';
-      const defaultStage = STAGE_FORM_OPTIONS[0] || '';
-      els.$modalStatusHidden.val(defaultStatus);
-      els.$modalStageHidden.val(defaultStage);
-      modalSelects.status?.setValue(defaultStatus);
-      modalSelects.stage?.setValue(defaultStage);
-
-      if (editing) {
-        setFormValue('name', editing.name);
-        setFormValue('owner', editing.owner);
-        setFormValue('model', editing.model);
-        setFormValue('customer', editing.customer || editing.client || '');
-        setFormValue('status', editing.status);
-        setFormValue('stage', editing.stage);
-        setFormValue('startDate', editing.startDate);
-        setFormValue('endDate', editing.endDate);
-        setFormValue('tags', (editing.tags || []).join(', '));
-        setFormValue('team', (editing.team || []).join(', '));
-        setFormValue('summary', '');
-        setFormValue('sku', editing.sku);
-        loadSummaryForEditing(editing);
-      }
-
-
-      els.$modal.removeClass('hidden');
-    }
-
-    function closeModal() {
-      if (!els.$modal.hasClass('hidden')) {
-        els.$modal.addClass('hidden');
-      }
-      state.editingId = null;
-      closeAll();
-    }
-
-    function setFormValue(name, value) {
-      const $field = els.$modalForm.find(`[name="${name}"]`);
-      if (!$field.length) return;
-      $field.val(value ?? '');
-      if (name === 'summary') { autosizeSummaryField(); }
-      if (name === 'status') {
-        modalSelects.status?.setValue($field.val());
-      }
-      if (name === 'stage') {
-        modalSelects.stage?.setValue($field.val());
-      }
-    }
-    function handleFormSubmit(event) {
-      event.preventDefault();
-      const formElement = els.$modalForm[0];
-      if (!formElement) return;
-
-      const formData = new FormData(formElement);
-      const editingId = state.editingId ? String(state.editingId) : null;
-
-      if (editingId) {
-        formData.set('id', editingId);
-      }
-
-      const payload = Object.fromEntries(formData.entries());
-      if (typeof payload.summary === 'string') {
-        payload.summary = payload.summary.trim();
-      }
-
-      const $submit = els.$modalSubmit;
-      const originalText = $submit.text();
-
-      $submit.prop('disabled', true).text('Saving...');
-
-      $.ajax({
-        url: saveEndpoint,
-        method: 'POST',
-        data: payload,
-        dataType: 'json'
-      })
-        .done(response => {
-          if (!response || !response.project) {
-            alert('Unexpected response from the server.');
-            return;
-          }
-
-          const saved = normalizeProject(response.project);
-          const savedId = String(saved.id);
-          const existingIndex = state.projects.findIndex(project => String(project.id) === savedId);
-          const normalizedSummaryLink = saved.summaryLink || '';
-          const rawSummaryLink = saved.summary_link || '';
-
-          if (existingIndex !== -1) {
-            const updated = { ...state.projects[existingIndex], ...saved };
-            updated.summary_link = rawSummaryLink || normalizedSummaryLink;
-            state.projects[existingIndex] = updated;
-          } else {
-            state.projects.unshift({ ...saved, summary_link: rawSummaryLink || normalizedSummaryLink });
-          }
-
-
-          refreshFilterOptions();
-          applyFilters();
-          renderStats();
-
-          if (state.selectedId && state.selectedId === (editingId || savedId)) {
-            state.selectedId = savedId;
-            openDetailDrawer(savedId);
-          }
-
-          closeModal();
-        })
-        .fail(xhr => {
-          const message = xhr.responseJSON && xhr.responseJSON.error
-            ? xhr.responseJSON.error
-            : 'Unable to save project. Please try again.';
-          alert(message);
-        })
-        .always(() => {
-          $submit.prop('disabled', false).text(originalText);
-        });
-    }
-
-    function exportCsv() {
-      if (!state.filtered.length) {
-        alert('Nothing to export. Adjust filters to include projects.');
-        return;
-      }
-
-      const headers = ['ID', 'Name', 'Customer', 'Owner', 'Status', 'Stage', 'Progress', 'Start Date', 'End Date', 'Budget Used', 'Budget Total'];
-      const rows = state.filtered.map(project => [
-        project.id,
-        project.name,
-        project.customer || project.client || '',
-        project.owner,
-        project.status,
-        project.stage,
-        project.progress,
-        project.startDate || '',
-        project.endDate || '',
-        project.budgetUsed ?? '',
-        project.budgetTotal ?? ''
-      ]);
-
-      const csv = [headers, ...rows]
-        .map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(','))
-        .join('\n');
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `projects-${new Date().toISOString().slice(0, 10)}.csv`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }
-
-    function generateId() {
-      const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-      return `P-${Date.now().toString().slice(-5)}${random}`;
-    }
-
-    function normalizeProject(raw) {
-      const toDate = value => {
-        if (!value) return '';
-        const date = new Date(value);
-        return Number.isNaN(date.valueOf()) ? '' : date.toISOString().split('T')[0];
-      };
-
-      const summarySource = raw.summary_link || raw.summaryLink || '';
-      const customer = raw.customer || raw.client || raw.account || raw.company || '';
-      
-      return {
-        id: String(raw.id || raw.project_id || `P-${Date.now()}`),
-        name: raw.name || raw.project_name || 'Untitled project',
-        owner: raw.owner || raw.project_owner || 'Unassigned',
-        status: raw.status || 'Active',
-        model: raw.model || '',
-        sku: raw.sku || '',
-        stage: raw.stage || raw.project_stage || raw.stage_name || raw.health || raw.project_health || raw.risk_level || raw.status || 'Unknown',
-          progress: clamp(Number(raw.progress ?? raw.completion ?? 0), 0, 100),
-          budgetUsed: Number(raw.budgetUsed ?? raw.budget_used ?? 0) || 0,
-          budgetTotal: Number(raw.budgetTotal ?? raw.budget_total ?? raw.budget ?? 0) || 0,
-        startDate: toDate(raw.startDate || raw.start_date || raw.begin_date || raw.beginDate),
-        endDate: toDate(raw.endDate || raw.end_date),
-        summaryLink: resolveSummaryLink(summarySource),
-        summary_link: summarySource,
-        tags: Array.isArray(raw.tags) ? raw.tags : parseCsv(raw.tags),
-        team: Array.isArray(raw.team) ? raw.team : parseCsv(raw.team),
-        lastUpdated: raw.lastUpdated || raw.updated_at || null,
-        client: customer,
-        customer: customer,
-        region: raw.region || ''
-      };
-    }
-
-    function formatDate(value) {
-      if (!value) return 'TBD';
-      const date = new Date(value);
-      if (Number.isNaN(date.valueOf())) return 'TBD';
-      return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
-    }
-
-    function formatDateTime(value) {
-      if (!value) return 'N/A';
-      const date = new Date(value);
-      if (Number.isNaN(date.valueOf())) return 'N/A';
-      return new Intl.DateTimeFormat('en-US', {
-        year: 'numeric', month: 'short', day: 'numeric',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false
-      }).format(date);
-    }
-
-
-    function formatCurrency(value) {
-      if (value == null || Number.isNaN(Number(value))) return 'N/A';
-      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number(value));
-    }
-
-    function clamp(value, min, max) {
-      return Math.min(Math.max(value, min), max);
-    }
-
-
-    function parseCsv(value) {
-      if (!value) return [];
-      return String(value).split(',').map(item => item.trim()).filter(Boolean);
-    }
-
-
-    function resolveSummaryLink(link) {
-      if (!link) return '';
-      let normalized = String(link).trim();
-      if (!normalized) return '';
-      normalized = normalized.replace(/\\/g, '/');
-
-      if (/^(?:https?:)?\/\//i.test(normalized)) {
-        return normalized;
-      }
-
-      if (normalized.startsWith('/')) {
-        return normalized;
-      }
-
-      while (normalized.startsWith('./')) {
-        normalized = normalized.slice(2);
-      }
-
-      if (normalized.startsWith('../')) {
-        return normalized;
-      }
-
-      const segments = window.location.pathname.split('/');
-      let inPagesDirectory = false;
-      for (let i = 0; i < segments.length; i += 1) {
-        if (segments[i] === 'pages') {
-          inPagesDirectory = true;
-          break;
-        }
-      }
-
-      if (normalized.startsWith('summary/')) {
-        return inPagesDirectory ? '../' + normalized : normalized;
-      }
-
-      if (inPagesDirectory) {
-        return '../summary/' + normalized;
-      }
-
-      return 'summary/' + normalized;
-    }
-
-    function buildSummarySection(project) {
-      const hasLink = !!(project && (project.summaryLink || project.summary_link));
-      const placeholder = hasLink
-        ? 'Loading summary�'
-        : '<p class="text-xs text-[#5c748a]">Document scope and decisions with Markdown.</p>';
-      return `
-        <div class="flex flex-col gap-2">
-          <h4 class="text-sm font-semibold text-[#101518]">Summary</h4>
-          <div class="markdown-body text-sm text-[#101518]" data-summary>${placeholder}</div>
+      <section id="project-toolbar" class="flex flex-wrap items-center gap-3 rounded-2xl border border-[#d4dce2] bg-white p-4 shadow-sm project-toolbar-sticky">
+        <div class="relative flex min-w-60 flex-1 items-center">
+          <span class="pointer-events-none absolute left-3 text-[#5c748a]">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+          <input id="projects-search" type="text" placeholder="Search by project name, owner, or tag..." class="h-10 w-full rounded-xl border border-[#d4dce2] bg-[#f7f9fc] pl-10 pr-3 text-sm text-[#101518] focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" />
         </div>
-      `;
-    }
+        <div class="flex flex-wrap items-center gap-3">
+          <label class="flex flex-col gap-1 text-xs font-medium text-[#5c748a]" style="width: 320px;">
+            Status
+            <div class="custom-select" data-select="status" data-placeholder="All statuses" role="listbox" aria-expanded="false">
+              <div class="selected" tabindex="0">All statuses</div>
+              <ul class="options"></ul>
+            </div>
+          </label>
+          <label class="flex flex-col gap-1 text-xs font-medium text-[#5c748a]" style="width: 320px;">
+            Owner
+            <div class="custom-select" data-select="owner" data-placeholder="All owners" role="listbox" aria-expanded="false">
+              <div class="selected" tabindex="0">All owners</div>
+              <ul class="options"></ul>
+            </div>
+          </label>
+          <label class="flex flex-col gap-1 text-xs font-medium text-[#5c748a]" style="width: 320px;">
+            Sort by
+            <div class="custom-select" data-select="sort" data-placeholder="Sort by" role="listbox" aria-expanded="false">
+              <div class="selected" tabindex="0">Name (A-Z)</div>
+              <ul class="options"></ul>
+            </div>
+          </label>
+        </div>
+      </section>
 
+      <section class="flex flex-col gap-4 xl:flex-row xl:items-start">
+        <div class="flex-1 rounded-2xl border border-[#d4dce2] bg-white shadow-sm">
+          <div class="flex items-center justify-between gap-3 border-b border-[#eaedf1] px-4 py-3">
+            <div>
+              <h2 class="text-base font-semibold">Project Pipeline</h2>
+              <p class="text-xs text-[#5c748a]">Select a row to open quick details.</p>
+            </div>
+            <div id="projects-banner" class="hidden rounded-lg border-l-4 border-[#f97316] bg-[#fff7ed] px-4 py-2 text-xs text-[#9a3412]">
+              Unable to reach the API. Displaying demo data.
+            </div>
+          </div>
+          <div class="relative overflow-x-auto">
+            <table class="min-w-full divide-y divide-[#eaedf1] text-sm">
+              <thead class="bg-[#f5f7fa] uppercase text-xs text-[#5c748a]">
+                <tr>
+                  <th class="whitespace-nowrap px-4 py-3 text-left">Project</th>
+                  <th class="whitespace-nowrap px-4 py-3 text-left">Model</th>
+                  <th class="whitespace-nowrap px-4 py-3 text-left">SKU</th>
+                  <th class="whitespace-nowrap px-4 py-3 text-left">Customer</th>
+                  <th class="whitespace-nowrap px-4 py-3 text-left">Owner</th>
+                  <th class="whitespace-nowrap px-4 py-3 text-left">Status / Stage</th>
+                  <th class="whitespace-nowrap px-4 py-3 text-left">Timeline</th>            </tr>
+              </thead>
+              <tbody id="projects-table-body" class="divide-y divide-[#f0f2f5]">
+                <!-- rows injected by script -->
+              </tbody>
+            </table>
+            <div id="projects-loading" class="absolute inset-0 hidden items-center justify-center bg-white/80">
+              <div class="flex items-center gap-3 text-sm text-[#5c748a]">
+                <span class="inline-flex size-3 animate-spin rounded-full border-2 border-[#5c748a]/30 border-t-[#5c748a]"></span>
+                Loading projects
+              </div>
+            </div>
+            <div id="projects-empty" class="hidden px-6 py-12 text-center text-sm text-[#5c748a]">
+              No projects match your filters. Try adjusting the search or reset the dropdowns.
+            </div>
+          </div>
+        </div>
 
-    function escapeHtml(value) {
-      return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
+        <aside id="project-detail-drawer" hidden class="hidden w-full max-w-xl flex-col gap-4 rounded-2xl border border-[#d4dce2] bg-white p-5 shadow-lg project-detail-sticky">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p id="project-detail-title" class="text-lg font-semibold">Project details</p>
+              <p id="project-detail-subtitle" class="text-xs text-[#5c748a]">Select a project to inspect milestones and financials.</p>
+            </div>
+            <button id="project-detail-close" class="text-[#5c748a] hover:text-[#101518]" title="Close detail panel">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div id="project-detail-content" class="detail-scroll flex flex-col gap-4 text-sm text-[#5c748a]">
+            <p>Select a project to see more information.</p>
+          </div>
+        </aside>
+      </section>
+    </div>
 
-  });
-</script>
-</div>
+    <div id="project-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/40 p-6">
+      <div class="flex max-h-full w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+        <div class="flex items-center justify-between gap-3 border-b border-[#eaedf1] px-6 py-4">
+          <div>
+            <h3 id="project-modal-title" class="text-lg font-semibold text-[#101518]">New project</h3>
+            <p class="text-xs text-[#5c748a]">Capture high-level details; you can refine later.</p>
+          </div>
+          <button class="project-modal-close text-[#5c748a] hover:text-[#101518]" title="Close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <form id="project-form" class="grid gap-4 overflow-y-auto px-6 py-6 text-sm text-[#101518]" autocomplete="off">
+          <div class="grid gap-4 md:grid-cols-3">
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-medium text-[#5c748a]">Project name<span class="text-red-500">*</span></span>
+              <input name="name" type="text" required class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3 focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" />
+            </label>
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-medium text-[#5c748a]">Project owner<span class="text-red-500">*</span></span>
+              <input name="owner" type="text" required class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3 focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" />
+            </label>
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-medium text-[#5c748a]">Model</span>
+              <input name="model" type="text" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3 focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" />
+            </label>
+          </div>
+          <div class="grid gap-4 md:grid-cols-3">
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-medium text-[#5c748a]">Customer</span>
+              <input name="customer" type="text" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3 focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" />
+            </label>
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-medium text-[#5c748a]">Status</span>
+              <input type="hidden" name="status" value="Active" data-select-hidden="status" />
+              <div class="custom-select" style="width: 100%;" data-select="modal-status" data-placeholder="Status" role="listbox" aria-expanded="false">
+                <div class="selected" tabindex="0">Active</div>
+                <ul class="options"></ul>
+              </div>
+            </label>
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-medium text-[#5c748a]">Stage</span>
+              <input type="hidden" name="stage" value="" data-select-hidden="stage" />
+              <div class="custom-select" style="width: 100%;" data-select="modal-stage" data-placeholder="Stage" role="listbox" aria-expanded="false">
+                <div class="selected" tabindex="0">Stage</div>
+                <ul class="options"></ul>
+              </div>
+            </label>
+          </div>
+          <div class="grid gap-4 md:grid-cols-3">
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-medium text-[#5c748a]">Start date</span>
+              <input name="startDate" type="date" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3" />
+            </label>
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-medium text-[#5c748a]">End date</span>
+              <input name="endDate" type="date" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3" />
+            </label>
+            <label class="flex flex-col gap-2">
+              <span class="text-xs font-medium text-[#5c748a]">SKU</span>
+              <input name="sku" type="text" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3" />
+            </label>
+          </div>
+          <label class="flex flex-col gap-2">
+            <span class="text-xs font-medium text-[#5c748a]">Key tags (comma separated)</span>
+            <input name="tags" type="text" placeholder="Example: Launch, Platform, FY25" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3" />
+          </label>
+          <label class="flex flex-col gap-2">
+            <span class="text-xs font-medium text-[#5c748a]">Core team (comma separated)</span>
+            <input name="team" type="text" placeholder="Add primary collaborators" class="h-10 rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3" />
+          </label>
+          <label class="flex flex-col gap-2">
+            <span class="text-xs font-medium text-[#5c748a]">Summary</span>
+            <textarea name="summary" rows="4" class="rounded-xl border border-[#d4dce2] bg-[#f7f9fc] px-3 py-2 focus:border-[#2563eb] focus:outline-none focus:ring-2 focus:ring-[#2563eb]/30" placeholder="Write Markdown summary; headings, lists, and code supported"></textarea>
+          </label>
+          <div class="flex items-center justify-end gap-2 border-t border-[#eaedf1] pt-4">
+            <button type="button" class="project-modal-close rounded-xl border border-[#d4dce2] px-4 py-2 text-sm font-medium text-[#5c748a] hover:text-[#101518]">
+              Cancel
+            </button>
+            <button type="submit" class="rounded-xl border border-transparent bg-[#2563eb] px-5 py-2 text-sm font-semibold text-white hover:bg-[#1d4ed8]">
+              Save project
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
   </body>
 </html>
 
