@@ -1,0 +1,1109 @@
+<style>
+  #modalEditToggle:checked ~ .modal-slide-panel {
+    max-height: 600px;
+    opacity: 1;
+  }
+
+  /* 輸入區 placeholder 字體大小 */
+  .choices__input.choices__input--cloned {
+    padding: 2px 6px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #6b7280;
+    background-color: #fff;
+  }
+
+  .choices__list--dropdown .choices__item,
+  .choices__list--dropdown .choices__item--selectable.is-highlighted {
+    font-size: 12px !important;
+    line-height: 0.6;
+  }
+
+  /* 目前被選中的那一個（下拉清單中的已選項） */
+  .choices__list--dropdown .choices__item.is-selected {
+    background-color: #e5e7eb !important; /* 灰底區別 */
+    color: #111827 !important;
+  }
+
+
+  .choices__input.choices__input--cloned:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* 修改輸入框本身的外框 */
+  .choices__inner {
+    min-height: 38px;
+    border-radius: 4px !important;   /* 圓角 */
+    border: 1px solid #d0d7de !important;  /* 邊框顏色 */
+    background-color: #ffffff !important; /* 背景色 */
+    padding: 8px 4px 2px 4px !important;    /* 內距 */
+  }
+
+  /* 已選擇的 tag 樣式（顯示項目） */
+  .choices__list--multiple .choices__item {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background-color: #6b7280;
+    color: white;
+    margin-right: 4px;
+  }
+
+  /* 限制下拉清單的高度，超過就出現捲軸 */
+  .choices__list--dropdown {
+    max-height: 300px; /* 6 行 x 40px */
+  }
+
+  .litepicker .month-item {
+    position: relative;
+  }
+  .litepicker .month-watermark {
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: rgba(0, 0, 0, 0.03);
+    pointer-events: none;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+  .litepicker .container__days .day-item {
+    font-weight: 700; /* 或 Tailwind 加 font-medium 到 parent */
+    font-size: 12px;
+  }
+
+  .litepicker .day-item {
+    color: white;
+  }
+
+  .litepicker {
+    --litepicker-day-color-hover: #555; /* Tailwind 紅色 red-600 */
+    box-shadow: none !important;
+  }
+
+  .litepicker .day-item:hover {
+    background-color: #f6f6f6 !important;
+    color: #1e3a8a !important;
+    border-radius: 9px !important;
+  }
+
+  .litepicker .day-item.is-start-date,
+  .litepicker .day-item.is-end-date {
+    background-color: #1e3a8a !important;
+    color: white !important;
+    border: 0px !important;
+  }
+
+  /* 圓角樣式拆開寫 */
+  .litepicker .day-item.is-start-date {
+    border-radius: 9px 0 0 9px !important;
+    background-color: #555 !important;
+  }
+  .litepicker .day-item.is-end-date {
+    border-radius: 0 9px 9px 0 !important;
+    background-color: #555 !important;
+  }
+  .litepicker .day-item.is-start-date.is-end-date {
+    border-radius: 9px !important;
+  }
+
+  /* 區間中間的樣式 */
+  .litepicker .day-item.is-in-range {
+    background-color: #f6f6f6 !important;
+    color: #1e3a8a !important;
+  }
+
+</style>
+<div class="flex min-w-72 flex-col gap-3 p-4">
+  <p class="text-[#101518] tracking-light text-[32px] font-bold leading-tight">Weekly Views</p>
+  <p class="text-[#5c748a] text-sm font-normal leading-normal">Overview of key metrics and performance indicators</p>
+</div>
+
+<div class="flex flex-wrap gap-4 px-4 py-1">
+  <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-xl border border-[#d4dce2] p-3">
+    <table id="scheduleTable" class="table-fixed w-full min-w-[800px] border border-gray-300"></table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="projectModal" class="fixed inset-0 z-50 flex items-start justify-center bg-black bg-opacity-40 pt-20 hidden">
+  <div id="modalBox" class="bg-white rounded-xl shadow-2xl p-0 w-[40%] max-w-4xl relative">
+    <!-- Modal Header -->
+    <div id="modalHeader" class="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-gray-200 to-gray-100 border-b cursor-move rounded-t-xl">
+      <h2 class="text-base font-bold text-[#101518]" id="modalTitle">Project Info</h2>
+      <div class="flex items-center gap-2">
+        <button id="modalEditToggle" class="text-gray-500 hover:text-gray-700" title="Edit">
+          <i class="fa-regular fa-pen-to-square text-lg"></i>
+        </button>
+        <button id="modalMaximize" class="text-gray-500 hover:text-gray-700" title="Maximize / Restore">
+          <i class="fa-regular fa-window-maximize text-lg"></i>
+        </button>
+        <button id="modalClose" class="text-gray-500 hover:text-gray-700" title="Close">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Modal Body -->
+    <div id="modalContent" class="p-6 text-sm text-[#5c748a] max-h-[80vh] overflow-y-auto">
+      <div class="modal-slide-panel transition-all duration-500 ease-in-out max-h-0 overflow-hidden opacity-0 mt-2">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+/**
+ * 根據 id 回傳專案資料
+ * @param {string|number} id - 專案的 ID
+ * @returns {Object|null} 找到的專案物件，找不到則回傳 null
+ */
+function getProjectScheduleById(id) {
+  if (!Array.isArray(GLOBAL_PROJECTS)) return null;
+  return GLOBAL_PROJECTS.find(project => project.id == id) || null;
+}
+
+/**
+ * 根據專案 ID 取得 schedule 的第一天與最後一天（格式：July 9, 2025）
+ * @param {string|number} id - 專案 ID
+ * @returns {{start: string, end: string} | null} 起訖日期，若找不到則回傳 null
+ */
+function getScheduleRangeById(id) {
+  const project = getProjectScheduleById(id);
+  if (!project || !project.schedule || typeof project.schedule !== 'object') return null;
+
+  const dates = Object.keys(project.schedule)
+    .filter(date => project.schedule[date]) // 過濾空值
+    .sort(); // ISO 日期格式可以直接排序
+
+  if (dates.length === 0) return null;
+
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  const start = formatter.format(new Date(dates[0]));
+  const end = formatter.format(new Date(dates[dates.length - 1]));
+
+  return { start, end };
+}
+
+
+
+/**
+ * 生成三週時程表格（包含週末，但週末底色不同）
+ * @param {Array} data - 項目數據，包含 id, name, schedule
+ * @param {String} containerId - 要插入 table 的 DOM id (ex: 'scheduleTable')
+ * @param {Number} [days=21] - 要顯示的日曆天數 (包含週末)
+ */
+function renderScheduleTable(data, containerId, days = 21) {
+  const todayStr = new Date().toISOString().split('T')[0];
+  const highlightTHColor = 'bg-purple-100'; // 今天日期的表頭顏色
+  const highlightTDColor = 'bg-purple-50'; // 今天日期的單元格顏色
+  const weekendTHColor = 'bg-neutral-200'; // 週末表頭顏色
+  const weekendTDColor = 'bg-neutral-100'; // 週末單元格顏色
+
+  const colorMap = {
+    green: 'bg-green-300 hover:bg-green-400',
+    orange: 'bg-orange-300 hover:bg-orange-400',
+    red: 'bg-red-300 hover:bg-red-400',
+    yellow: 'bg-yellow-300 hover:bg-yellow-400',
+    purple: 'bg-purple-300 hover:bg-purple-400',
+    blue: 'bg-blue-300 hover:bg-blue-400',
+    indigo: 'bg-indigo-300 hover:bg-indigo-400',
+    pink: 'bg-pink-300 hover:bg-pink-400',
+    teal: 'bg-teal-300 hover:bg-teal-400',
+    cyan: 'bg-cyan-300 hover:bg-cyan-400'
+  };
+
+  const startDate = new Date();
+  let skipped = 0;
+  while (skipped < 5) {
+    startDate.setDate(startDate.getDate() - 1);
+    const day = startDate.getDay();
+    if (day !== 0 && day !== 6) skipped++;
+  }
+
+  const workDays = generateWorkdays(startDate, days);
+
+  const workDayFullDates = new Set(workDays.map(d => d.full));
+
+  const filteredProjects = data.filter(project => {
+    for (const date in project.schedule) {
+      if (project.schedule.hasOwnProperty(date) && workDayFullDates.has(date)) {
+        return true;
+      }
+    }
+    return false;
+  });
+
+  const $table = $('#' + containerId);
+  $table.empty();
+
+  const $thead = $('<thead><tr class="bg-neutral-50"></tr></thead>');
+  const $theadRow = $thead.find('tr');
+  $theadRow.append('<th class="px-2 py-3 text-left text-[#141414] text-[11px] w-[200px] whitespace-nowrap">Project</th>');
+
+  workDays.forEach(d => {
+    const isToday = d.full === todayStr;
+    const isWeekend = d.week === 'Sat' || d.week === 'Sun';
+    let extraClass = '';
+    if (isToday) {
+      extraClass = highlightTHColor;
+    } else if (isWeekend) {
+      extraClass = weekendTHColor;
+    }
+    $theadRow.append(`
+      <th class="text-[#141414] text-[11px] whitespace-nowrap border ${extraClass}">
+        ${d.week}<br><span class="text-xs">${d.date}</span>
+      </th>
+    `);
+  });
+
+  $theadRow.append('<th class="text-center text-[#141414] text-[11px] whitespace-nowrap">&nbsp;</th>');
+
+  const $tbody = $('<tbody></tbody>');
+  filteredProjects.forEach(project => {
+    const $row = $('<tr class="border-t border-[#dbdbdb]"></tr>');
+    // $row.append(`<td class="sticky left-0 z-20 bg-neutral-50 px-2 py-2 w-[200px] text-left text-[#141414] text-[11px] font-bold whitespace-nowrap">${project.id}&nbsp;${project.name}</td>`);
+    $row.append(`
+      <td class="sticky left-0 z-20 bg-neutral-50 px-2 py-2 w-[200px] text-left text-[#101518] text-[11px] font-bold whitespace-nowrap">
+        <button class="text-left text-blue-600 underline hover:text-blue-800 project-trigger " data-id="${project.id}" data-name="${project.name}" style="all:unset;cursor:pointer;">
+          <span class="text-gray-400">#${project.id}</span>&nbsp;&nbsp;${project.name}
+        </button>
+      </td>
+    `);
+
+
+    workDays.forEach((day, i) => {
+      const color = project.schedule[day.full];
+      const colorClass = colorMap[color] || '';
+      const rounded = getRoundedClass(i, project.schedule, workDays); // 調用修改後的 getRoundedClass
+      const isToday = day.full === todayStr;
+      const isWeekend = day.week === 'Sat' || day.week === 'Sun';
+
+      let cellBgClass = '';
+      if (isToday) {
+        cellBgClass = highlightTDColor;
+      } else if (isWeekend) {
+        cellBgClass = weekendTDColor;
+      }
+
+      const tooltipText = `${project.name}, ${day.week}, ${day.date}`;
+      const content = color
+        ? `${parseInt(day.date.split('/')[1])}
+           <div class="relative group h-2">
+             <div class="h-2 ${colorClass} ${rounded} cursor-pointer"></div>
+             <div class="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+               ${tooltipText}
+             </div>
+           </div>`
+        : '';
+
+      $row.append(`<td class="px-0 py-2 text-center text-[10px] border ${cellBgClass}">${content}</td>`);
+    });
+
+    $row.append('<td class="px-0 py-2 text-center"></td>');
+    $tbody.append($row);
+  });
+
+  $table.append($thead);
+  $table.append($tbody);
+
+  function generateWorkdays(startDate, count) {
+    const days = [];
+    const date = new Date(startDate);
+    while (days.length < count) {
+      days.push({
+        full: date.toISOString().split('T')[0],
+        date: `${date.getMonth() + 1}/${date.getDate()}`,
+        week: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()]
+      });
+      date.setDate(date.getDate() + 1);
+    }
+    return days;
+  }
+
+  /**
+   * 根據排程判斷圓角樣式
+   * 當專案的視覺區塊開始或結束於三週顯示範圍的第一天或最後一天時，不應用圓角類別。
+   * @param {Number} index - 當前日期在 `workDays` 中的索引
+   * @param {Object} schedule - 專案的排程物件
+   * @param {Array} workDays - 日曆日列表
+   * @returns {String} CSS 圓角類別
+   */
+  function getRoundedClass(index, schedule, workDays) {
+    const dayKey = workDays[index].full;
+    const current = schedule[dayKey];
+    if (!current) return ''; // 當前日期沒有排程，無需圓角
+
+    const prevKey = index> 0 ? workDays[index - 1].full : null;
+    const nextKey = index < workDays.length - 1 ? workDays[index + 1].full : null;
+
+    // 判斷前一天是否存在且顏色相同 (視覺上的塊是否從此開始)
+    const prevHasSameColor = prevKey && schedule[prevKey] === current;
+    // 判斷後一天是否存在且顏色相同 (視覺上的塊是否到此結束)
+    const nextHasSameColor = nextKey && schedule[nextKey] === current;
+
+    const isBlockStartVisual = !prevHasSameColor; // 視覺塊是否從此日開始
+    const isBlockEndVisual = !nextHasSameColor;   // 視覺塊是否在此日結束
+
+    const isFirstDayOfDisplayRange = (index === 0);
+    const isLastDayOfDisplayRange = (index === workDays.length - 1);
+
+    let roundedClass = '';
+
+    // 如果是單日塊 (或視覺上在此日開始和結束)
+    if (isBlockStartVisual && isBlockEndVisual) {
+      // 且不在顯示範圍的第一天或最後一天，則應用完整圓角
+      if (!isFirstDayOfDisplayRange && !isLastDayOfDisplayRange) {
+        roundedClass = 'rounded-full';
+      }
+      // 否則，不應用圓角 (單日塊在顯示邊緣)
+    }
+    // 如果是多日塊的開始 (視覺上從此日開始)
+    else if (isBlockStartVisual) {
+      // 且不在顯示範圍的第一天，則應用左圓角
+      if (!isFirstDayOfDisplayRange) {
+        roundedClass = 'rounded-l-full';
+      }
+      // 否則，不應用圓角 (塊從顯示邊緣開始)
+    }
+    // 如果是多日塊的結束 (視覺上在此日結束)
+    else if (isBlockEndVisual) {
+      // 且不在顯示範圍的最後一天，則應用右圓角
+      if (!isLastDayOfDisplayRange) {
+        roundedClass = 'rounded-r-full';
+      }
+      // 否則，不應用圓角 (塊在顯示邊緣結束)
+    }
+    // 如果是塊的中間部分，roundedClass 保持為空
+
+    return roundedClass;
+  }
+}
+
+// For Modal content
+function renderScheduleInfo(start, end) {
+  return `
+    <div class="lg:col-span-2 flex gap-1">
+      <div class="w-24 text-gray-400 flex items-center">
+        <i class="fa-regular fa-calendar-days mr-2"></i>Schedule
+      </div>
+      <div class="text-gray-700 text-xs">${start} <i class="fa-solid fa-arrow-right"></i> ${end}</div>
+    </div>
+  `;
+}
+
+function renderInfoRow(iconClass, label, contentHtml) {
+  return `
+    <div class="flex gap-1">
+      <div class="w-24 text-gray-400 flex items-center">
+        <i class="${iconClass} mr-2"></i>${label}
+      </div>
+      <div>${contentHtml}</div>
+    </div>
+  `;
+}
+
+function renderPropertySection(project) {
+  return `
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-x-8 gap-y-4 text-xs">
+      ${renderScheduleInfo(project.begin_date, project.end_date)}
+      ${renderInfoRow('fa-solid fa-qrcode', 'SKU', `<span class="px-2 py-0.5 rounded-md text-xs font-medium bg-slate-100 text-slate-800">${project.sku || ''}</span>`)}
+      ${renderInfoRow('fa-solid fa-icons', 'Category', `<span class="px-2 py-0.5 rounded-md text-xs font-medium bg-green-100 text-green-800">${project.category || ''}</span>`)}
+      ${renderInfoRow('fa-solid fa-location-dot', 'Location', `<span class="px-2 py-0.5 rounded-md text-xs font-medium bg-purple-100 text-purple-800">${project.location || ''}</span>`)}
+      ${renderInfoRow('fa-solid fa-user', 'DRI', `<span class="px-2 py-0.5 rounded-md text-xs font-medium bg-red-100 text-red-800">${project.owner || ''}</span>`)}
+      ${renderInfoRow('fa-solid fa-bars-staggered', 'Stage', `<span class="px-2 py-0.5 rounded-md text-xs font-medium bg-lime-100 text-lime-800">${project.stage || ''}</span>`)}
+      ${renderInfoRow('fa-solid fa-circle-check', 'Status', `<span class="px-2 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800">${project.status || ''}</span>`)}
+      ${renderInfoRow('fa-solid fa-paperclip', 'Attachment', `<span class="text-gray-400 italic">${project.attachment || 'Empty'}</span>`)}
+    </div>
+  `;
+}
+
+function renderTabs() {
+  return `
+    <div class="border-b border-gray-200 px-6 pt-2">
+      <ul class="flex flex-wrap -mb-px text-sm font-semibold text-center" id="timelineTabs">
+        <li class="mr-2">
+          <button class="inline-block p-2 rounded-t border-b-2 border-stone-500 hover:border-gray-300 text-stone-700" data-tab="timeline">
+            <i class="fa-solid fa-timeline mr-2"></i>Timeline
+          </button>
+        </li>
+        <li class="mr-2">
+          <button class="inline-block p-2 rounded-t border-b-2 border-transparent hover:border-gray-300" data-tab="tasks">
+            <i class="fa-solid fa-list-check mr-2"></i>Tasks
+          </button>
+        </li>
+        <li class="mr-2">
+          <button class="inline-block p-2 rounded-t border-b-2 border-transparent hover:border-gray-300" data-tab="issues">
+            <i class="fa-solid fa-bug mr-2"></i>Issues
+          </button>
+        </li>
+        <li class="mr-2">
+          <button class="inline-block p-2 rounded-t border-b-2 border-transparent hover:border-gray-300" data-tab="team">
+            <i class="fa-solid fa-users mr-2"></i>Team</button>
+        </li>
+      </ul>
+    </div>
+  `;
+}
+
+function renderTimelineTab(items = []) {
+  const timelineHtml = items.map((item, index) => {
+    const isFirst = index === 0;
+    const isLast = index === items.length - 1;
+
+    // 上方線條
+    const topLine = !isFirst ? `<div class="w-[1.5px] bg-[#dbdbdb] h-2"></div>` : '';
+    // 下方線條
+    const bottomLine = !isLast ? `<div class="w-[1.5px] bg-[#dbdbdb] h-2 grow"></div>` : '';
+
+    return `
+      <div class="flex flex-col items-center gap-1 ${isFirst ? 'pt-3' : (isLast ? 'pb-3' : 'pt-0') }">
+        ${topLine}
+        <div class="text-[#141414]">
+          <i class="fa-solid fa-font-awesome fa-2x"></i>
+        </div>
+        ${bottomLine}
+      </div>
+      <div class="flex flex-1 flex-col py-3 px-3 rounded-2xl hover:bg-gray-100 cursor-pointer">
+        <p class="text-[#141414] text-base font-medium leading-normal">${item.title}</p>
+        <p class="text-neutral-500 text-xs font-normal leading-normal">${item.datetime}</p>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div id="tab-timeline" class="tab-content">
+      <div class="grid grid-cols-[40px_1fr] gap-x-2">
+        ${timelineHtml}
+      </div>
+      <div class="flex px-4 py-3 justify-start">
+        <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#ededed] text-[#141414] text-sm font-bold leading-normal tracking-[0.015em]">
+          <span class="truncate">Add Event</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+
+function renderTasksTab(tasks = []) {
+  const rowsHtml = tasks.map(task => `
+    <tr class="border-t border-t-[#dbdbdb]">
+      <td class="px-4 py-2 w-[400px] text-[#141414] text-sm font-normal leading-normal">${task.name}</td>
+      <td class="px-4 py-2 w-[400px] text-neutral-500 text-sm font-normal leading-normal">${task.dep || 'None'}</td>
+      <td class="px-4 py-2 w-60 text-sm font-normal leading-normal">
+        <button class="flex min-w-[64px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-8 px-4 bg-[#ededed] text-[#141414] text-sm font-medium leading-normal w-full">
+          <span class="truncate">${task.status}</span>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+
+  return `
+    <div id="tab-tasks" class="tab-content hidden">
+      <div class="px-4">
+        <div class="flex overflow-hidden rounded-xl border border-[#dbdbdb]">
+          <table class="flex-1">
+            <thead>
+              <tr class="bg-neutral-50">
+                <th class="px-4 py-3 text-left text-[#141414] w-[400px] text-sm font-medium leading-normal"> Task </th>
+                <th class="px-4 py-3 text-left text-[#141414] w-[400px] text-sm font-medium leading-normal"> Dependencies </th>
+                <th class="px-4 py-3 text-left text-[#141414] w-60 text-sm font-medium leading-normal"> Status </th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+        <div class="flex px-4 py-3 justify-start">
+          <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-[#ededed] text-[#141414] text-sm font-bold leading-normal tracking-[0.015em]">
+            <span class="truncate">Add Task</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+
+function renderIssuesTab(issues = []) {
+  const rowsHtml = issues.map(issue => `
+    <tr class="border-t border-t-[#dbdbdb]">
+      <td class="px-4 py-2 w-[400px] text-[#141414] text-sm font-normal leading-normal">${issue.title}</td>
+      <td class="px-4 py-2 w-[400px] text-neutral-500 text-sm font-normal leading-normal">${issue.linkedTask || '-'}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <div id="tab-issues" class="tab-content hidden">
+      <div class="px-4">
+        <div class="flex overflow-hidden rounded-xl border border-[#dbdbdb]">
+          <table class="flex-1">
+            <thead>
+              <tr class="bg-neutral-50">
+                <th class="px-4 py-3 text-left text-[#141414] w-[400px] text-sm font-medium leading-normal">Issue</th>
+                <th class="px-4 py-3 text-left text-[#141414] w-[400px] text-sm font-medium leading-normal">Linked Task</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+
+function renderTeamTab() {
+  return `
+    <div id="tab-team" class="tab-content hidden">
+      <div class="flex items-center px-4 justify-start">
+        <div class="overflow-visible w-[34px]">
+          <div class="bg-center bg-no-repeat aspect-square bg-cover border-neutral-50 bg-[#ededed] text-neutral-500 rounded-full flex items-center justify-center size-11 border-4" ></div>
+        </div>
+        <div class="overflow-visible w-[34px]">
+          <div class="bg-center bg-no-repeat aspect-square bg-cover border-neutral-50 bg-[#ededed] text-neutral-500 rounded-full flex items-center justify-center size-11 border-4" ></div>
+        </div>
+        <div class="overflow-visible w-11">
+          <div class="bg-center bg-no-repeat aspect-square bg-cover border-neutral-50 bg-[#ededed] text-neutral-500 rounded-full flex items-center justify-center size-11 border-4" ></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderTabContents() {
+  const timelineData = [
+    { title: "Project Kickoff", datetime: "2024-01-15, 10:05 AM" },
+    { title: "Milestone 1 Achieved", datetime: "2024-03-01, 2:17 PM" },
+    { title: "Client Presentation", datetime: "2024-04-15, 11:26 AM" },
+    { title: "milestone", datetime: "2024-04-15, 11:01 AM" },
+  ];
+
+  const tasksData = [
+    { name: 'Start SMT', dep: '', status: 'To Do' },
+    { name: 'Board Level', dep: 'SMT', status: 'In Progress' },
+    { name: 'FATP', dep: 'SMT', status: 'In Progress' },
+    { name: 'OOBA', dep: 'FATP', status: 'Blocked' },
+  ];
+
+  const issuesData = [
+    { title: 'Approval Delay', linkedTask: 'Review and Approval' },
+    { title: 'Resource Constraints', linkedTask: 'Content Creation' },
+    { title: 'HDMI connector not in the right position', linkedTask: 'Environment' },
+  ];
+
+  return `
+    <div class="px-6 pb-4">
+      ${renderTimelineTab(timelineData)}
+      ${renderTasksTab(tasksData)}
+      ${renderIssuesTab(issuesData)}
+      ${renderTeamTab()}
+    </div>
+  `;
+}
+
+/**
+ * 載入並渲染編輯表單。
+ * @param {object} project - 包含 id 和 name 等基本資訊的專案物件。
+ */
+function renderEditForm(project, pickerId) {
+  return `
+    <div id="modalEditForm" class="fixed top-0 right-0 h-[calc(100%-25px)] w-[320px] bg-white shadow-lg z-50 transform translate-x-full transition-transform duration-300 ease-in-out border-l border-gray-300 rounded-l-xl flex flex-col">
+      <div class="flex items-center justify-between px-4 py-3 border-b">
+        <h3 class="text-base font-semibold text-gray-800">Project Editor</h3>
+        <button id="editPanelClose" class="text-gray-500 hover:text-gray-700">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-4 overflow-y-auto h-full">
+        <!-- 必要 hidden：Project ID / Start / End -->
+        <input type="hidden" id="inputProjectId" value="${project.id || ''}">
+        <input type="hidden" id="inputStart" value="${project.begin_date || ''}">
+        <input type="hidden" id="inputEnd" value="${project.end_date || ''}">
+
+        <label class="block text-sm font-medium text-gray-700 mb-1">Project Name</label>
+        <input id="inputName" class="w-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 rounded px-3 py-2 text-sm" value="${project.name || ''}">
+
+        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Production Period</label>
+        <div id="${pickerId}" class="pb-4"></div>
+        <input type="text" id="dateRangeInput" class="w-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 rounded px-3 py-2 text-sm" readonly placeholder="Empty" value="${
+          project.begin_date && project.end_date ? `${project.begin_date} ~ ${project.end_date}` : ''
+        }"/>
+
+        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">DRI</label>
+        <input id="inputDRI" class="w-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 rounded px-3 py-2 text-sm" value="${project.owner || ''}">
+
+        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Location</label>
+        <select id="locationSelect" class="w-full">
+          ${Array.from({length:26}, (_,i)=>`<option value="2F${(i+1).toString().padStart(2,'0')}">2F${(i+1).toString().padStart(2,'0')}</option>`).join('')}
+          ${Array.from({length:26}, (_,i)=>`<option value="3F${(i+1).toString().padStart(2,'0')}">3F${(i+1).toString().padStart(2,'0')}</option>`).join('')}
+        </select>
+
+        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">SKU</label>
+        <input id="inputSKU" class="w-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 rounded px-3 py-2 text-sm" value="${project.sku || ''}">
+
+        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Category</label>
+        <input id="inputCategory" class="w-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 rounded px-3 py-2 text-sm" value="${project.category || ''}">
+
+        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Stage</label>
+        <input id="inputStage" class="w-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 rounded px-3 py-2 text-sm" value="${project.stage || ''}">
+
+        <label class="block text-sm font-medium text-gray-700 mt-4 mb-1">Status</label>
+        <input id="inputStatus" class="w-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-gray-500 rounded px-3 py-2 text-sm" value="${project.status || ''}">
+
+        <button id="btnSaveProject" data-id="${project.id}" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm w-full">
+          Save
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+
+
+
+async function loadAndRenderProject(id, name) {
+  try {
+    const { project } = await $.getJSON(`api/ajax_project_detail.php?project_id=${id}`);
+    renderModal(project, name);     // 注入 HTML（含唯一 picker 容器）
+    bindModalEvents();              // 綁 modal 裡的按鈕、tabs
+    initPicker(`inline-picker-${project.id}`, project); // 初始化 Litepicker
+    initLocationChoices();
+    updateLocationSelect(project.location);
+
+    $('#projectModal').removeClass('hidden');
+  } catch (e) {
+    console.error('Load failed', e);
+  }
+}
+
+function renderModal(project, name) {
+  const pickerId = `inline-picker-${project.id}`;
+  const propertySection = renderPropertySection(project);
+  const tabNavigation = renderTabs();
+  const tabContents = renderTabContents();
+  // const editForm = renderEditForm(project, pickerId).replace('id="inline-picker"', `id="${pickerId}"`);
+  const editForm = renderEditForm(project, pickerId);
+
+  $('#modalTitle').text(name);
+  $('#modalContent').html(`
+    <div class="space-y-3 text-xs">
+      ${propertySection}
+      ${tabNavigation}
+      ${tabContents}
+      ${editForm}
+    </div>
+  `);
+}
+
+function initPicker(pickerId, project) {
+  // 如果之前有同 id picker，先 destroy
+  if (window.__pickers?.[pickerId]) {
+    window.__pickers[pickerId].destroy();
+  }
+  const picker = new Litepicker({
+    element: document.createElement('input'),
+    inlineMode: true,
+    parentEl: `#${pickerId}`,
+    numberOfMonths: 1,
+    singleMode: false,
+    format: 'YYYY/MM/DD',
+    autoApply: true,
+    lang: 'en-us',
+    setup: (p) => {
+      p.on('selected', (start, end) => {
+        const startStr = dayjs(start.dateInstance).format('YYYY/MM/DD');
+        const endStr = dayjs(end.dateInstance).format('YYYY/MM/DD');
+        $('#dateRangeInput').val(`${startStr} ~ ${endStr}`);
+        $('#inputStart').val(startStr);
+        $('#inputEnd').val(endStr);
+      });
+    }
+  });
+
+  // 預設日期區間
+  if (project.begin_date && project.end_date) {
+    const s = dayjs(project.begin_date).format('YYYY-MM-DD');
+    const e = dayjs(project.end_date).format('YYYY-MM-DD');
+    picker.setDateRange(s, e);
+    // 同步 hidden & 顯示欄位
+    $('#inputStart').val(dayjs(s).format('YYYY/MM/DD'));
+    $('#inputEnd').val(dayjs(e).format('YYYY/MM/DD'));
+    $('#dateRangeInput').val(`${dayjs(s).format('YYYY/MM/DD')} ~ ${dayjs(e).format('YYYY/MM/DD')}`);
+  }
+
+  // 初始化 Choices 並設定目前值
+  if (project.location) {
+    const inst = $('#locationSelect').data('choicesInstance');
+    if (inst) inst.setChoiceByValue(String(project.location));
+    else $('#locationSelect').val(String(project.location));
+  }
+
+  window.__pickers = window.__pickers || {};
+  window.__pickers[pickerId] = picker;
+}
+
+
+
+
+// jQuery 版：初始化（或重新初始化）Location 的 Choices
+function initLocationChoices() {
+  const $select = $('#locationSelect');
+  if (!$select.length) return;
+
+  // 避免重複初始化：若有舊實例先銷毀
+  const prev = $select.data('choicesInstance');
+  if (prev && typeof prev.destroy === 'function') {
+    prev.destroy();
+    $select.removeData('choicesInstance');
+  }
+
+  // 初始化（用原生 DOM）
+  const instance = $select.data('choicesInstance') || new Choices($select.get(0), {
+    searchEnabled: true,
+    itemSelectText: '',
+    shouldSort: true,
+  });
+
+  $select.data('choicesInstance', instance);
+
+  // 綁定顯示下拉時的捲動事件
+  $select.on('showDropdown', () => {
+    const dd = instance.dropdown.element;
+    const selected = dd.querySelector('.choices__item.is-selected');
+    if (selected) selected.scrollIntoView({ block: 'nearest' });
+  });
+}
+
+
+function updateLocationSelect(locationValue) {
+  const $select = $('#locationSelect');
+  if (!$select.length) return;
+
+  // 更新 select 的值
+  $select.val(locationValue);
+
+  // 如果有 Choices 實例，更新它的顯示
+  const instance = $select.data('choicesInstance');
+  if (instance) {
+    instance.setChoiceByValue(locationValue);
+  }
+}
+
+
+
+
+// Modal 點擊綁定
+function bindModalEvents()
+{
+  // 1. 點擊專案 Trigger → 載入 & 顯示 Modal
+  $('#scheduleTable')
+    .off('click.project', '.project-trigger')
+    .on('click.project', '.project-trigger', function () {
+      const projectId = $(this).data('id');
+      const projectName = $(this).data('name');
+
+      // 改用你新的方法載入專案內容
+      loadAndRenderProject(projectId, projectName);
+
+      // 顯示 Modal
+      $('#projectModal').removeClass('hidden');
+    });
+
+  // 2. Tab 切換邏輯（事件委派）
+  $('#modalContent')
+  .off('click.tab', '#timelineTabs button')
+  .on('click.tab', '#timelineTabs button', function () {
+    $('#timelineTabs button')
+      .removeClass('text-stone-700 border-stone-500 font-semibold')
+      .addClass('border-transparent');
+    $('.tab-content').addClass('hidden');
+    $(this)
+      .addClass('text-stone-700 border-stone-500 font-semibold')
+      .removeClass('border-transparent');
+
+    $(`#tab-${$(this).data('tab')}`).removeClass('hidden');
+  });
+
+  // 3. 編輯面板顯示 / 隱藏
+  $('#modalEditToggle')
+    .off('click.editToggle')
+    .on('click.editToggle', function () {
+      const $panel = $('#modalEditForm');
+      const isOpen = !$panel.hasClass('translate-x-full');
+
+      if (isOpen) {
+        $panel.removeClass('translate-x-0').addClass('translate-x-full');
+      } else {
+        $panel.removeClass('translate-x-full').addClass('translate-x-0');
+      }
+    });
+
+  // Save → 更新資料庫 → 關閉 editor
+  $('#modalEditForm')
+    .off('click.save', '#btnSaveProject')
+    .on('click.save', '#btnSaveProject', function () {
+      const $btn = $(this);
+      const payload = {
+        id: $('#inputProjectId').val(),
+        name: $('#inputName').val(),
+        dri: $('#inputDRI').val(),
+        location: $('#locationSelect').val(),
+        sku: $('#inputSKU').val(),
+        category: $('#inputCategory').val(),
+        stage: $('#inputStage').val(),
+        status: $('#inputStatus').val(),
+        start: $('#inputStart').val() || '',  // YYYY/MM/DD
+        end: $('#inputEnd').val() || ''       // YYYY/MM/DD
+      };
+
+      // 簡單驗證（可再加強）
+      if (!payload.name) { alert('Project Name is required'); return; }
+
+      // Loading 狀態
+      $btn.prop('disabled', true).text('Saving...');
+
+      $.ajax({
+        url: 'api/update_project.php',   // ← 你的更新 API
+        type: 'POST',
+        dataType: 'json',
+        data: payload,
+      })
+      .done(function (resp) {
+        if (resp && resp.success) {
+          // 關閉右側 editor（保留 Modal 主畫面）
+          $('#modalEditForm').addClass('translate-x-full').removeClass('translate-x-0');
+
+          // 若你想立即反映到 Property 區塊，這裡可以動態更新（可選）
+          // $('#modalEditForm ...').text(...)
+
+          // 重新載入 modal 內容（最保險）
+          loadAndRenderProject(payload.id, payload.name);
+
+          updateGlobalProject(payload.id, payload.name, payload.start, payload.end);
+
+          // 小提示
+          console.info('Project updated.');
+        } else {
+          alert(resp?.message || 'Update failed.');
+        }
+      })
+      .fail(function (xhr) {
+        console.error('Update error:', xhr.responseText || xhr.statusText);
+        alert('Server error. Please try again.');
+      })
+      .always(function () {
+        $btn.prop('disabled', false).text('Save');
+      });
+    });
+
+  // 4. 編輯面板關閉按鈕
+  $('#editPanelClose')
+    .off('click.editClose')
+    .on('click.editClose', function () {
+      $('#modalEditForm')
+        .addClass('translate-x-full')
+        .removeClass('translate-x-0');
+    });
+}
+
+
+/**
+ * 將 'YYYY/MM/DD' 或 'YYYY-MM-DD' 正規化為 'YYYY-MM-DD'
+ */
+function normalizeDateString(s) {
+  if (!s) return null;
+  const t = String(s).trim().replace(/\//g, '-');
+  // 簡單驗證
+  const m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return null;
+  const d = new Date(`${m[1]}-${m[2]}-${m[3]}T00:00:00`);
+  // 無效日期防呆
+  if (Number.isNaN(d.getTime())) return null;
+  // 回存為 YYYY-MM-DD
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${mm}-${dd}`;
+}
+
+/**
+ * 取得專案 schedule 的「眾數顏色」（若全空則回 'green'）
+ */
+function getDominantColor(schedule = {}) {
+  const counter = {};
+  for (const v of Object.values(schedule || {})) {
+    if (!v) continue;
+    counter[v] = (counter[v] || 0) + 1;
+  }
+  let best = null, max = -1;
+  for (const [color, cnt] of Object.entries(counter)) {
+    if (cnt > max) { max = cnt; best = color; }
+  }
+  return best || 'green';
+}
+
+/**
+ * 依起訖日（含端點）生成連續日期的 schedule（全部套同一顏色）
+ */
+function buildSchedule(beginDate, endDate, color) {
+  const out = {};
+  const b = new Date(`${beginDate}T00:00:00`);
+  const e = new Date(`${endDate}T00:00:00`);
+  for (let d = new Date(b); d <= e; d.setDate(d.getDate() + 1)) {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    out[`${yyyy}-${mm}-${dd}`] = color;
+  }
+  return out;
+}
+
+/**
+ * 更新 GLOBAL_PROJECTS 指定 id 的 name 與 schedule（根據 begin/end 重新生成）
+ * @param {number|string} id
+ * @param {string} newName
+ * @param {string} begin_date  - 'YYYY-MM-DD' 或 'YYYY/MM/DD'
+ * @param {string} end_date    - 'YYYY-MM-DD' 或 'YYYY/MM/DD'
+ * @returns {object|null} 回傳更新後的專案物件；找不到則回傳 null
+ */
+function updateGlobalProject(id, newName, begin_date, end_date) {
+  const idx = GLOBAL_PROJECTS.findIndex(p => String(p.id) === String(id));
+  if (idx === -1) {
+    console.warn(`updateGlobalProject: 找不到 id=${id} 的專案`);
+    return null;
+  }
+
+  // 1) 取既有顏色（眾數）
+  const baseColor = getDominantColor(GLOBAL_PROJECTS[idx].schedule);
+
+  // 2) 正規化日期 + 邊界處理（若 begin > end 交換）
+  let b = normalizeDateString(begin_date);
+  let e = normalizeDateString(end_date);
+  if (!b || !e) {
+    console.warn('updateGlobalProject: 日期格式不正確，需為 YYYY-MM-DD 或 YYYY/MM/DD', { begin_date, end_date });
+    return null;
+  }
+  if (b > e) { const tmp = b; b = e; e = tmp; }
+
+  // 3) 生成新 schedule
+  const newSchedule = buildSchedule(b, e, baseColor);
+
+  // 4) 寫回 GLOBAL_PROJECTS
+  GLOBAL_PROJECTS[idx] = {
+    ...GLOBAL_PROJECTS[idx],
+    name: newName,
+    schedule: newSchedule
+  };
+
+  // 5) 回傳更新後物件（順便好做後續 render）
+  renderScheduleTable(GLOBAL_PROJECTS, 'scheduleTable');
+  return GLOBAL_PROJECTS[idx];
+}
+
+
+
+
+
+
+
+$(document).ready(function() {
+
+  $.ajax({
+    url: 'api/get_projects.php', // 假設您的 PHP 文件路徑是 'api/ajax_all_projects.php'
+    type: 'GET', // 或者 'POST' 取決於您的需求，但對於獲取數據，'GET' 更常用
+    dataType: 'json', // 預期從伺服器返回 JSON 數據
+    success: function(projectsData) {
+      GLOBAL_PROJECTS = projectsData;  // 將資料存到全域變數
+      // 在這裡呼叫 renderScheduleTable 函數並傳遞獲取的數據
+      if (typeof renderScheduleTable === 'function') {
+        renderScheduleTable(projectsData, 'scheduleTable');
+      } else {
+        console.error("renderScheduleTable 函數未定義。請確保它在腳本中可用。");
+      }
+    },
+    error: function(xhr, status, error) {
+      // 處理錯誤情況
+      console.error("調用 ajax_all_projects.php 失敗:", status, error);
+      console.error("響應文本:", xhr.responseText);
+    }
+  });
+
+  bindModalEvents();
+
+  $('#modalClose').on('click', function () {
+    $('#projectModal').addClass('hidden');
+  });
+
+  // 按下 ESC 鍵
+  $(document).on('keydown', function (e) {
+    if (e.key === 'Escape') {
+      $('#projectModal').addClass('hidden');
+    }
+  });
+
+  // 最大化切換
+  let isMaximized = false;
+  $('#modalMaximize').on('click', function () {
+    const $box = $('#modalBox');
+    if (isMaximized) {
+      $box.css({ width: '', height: '', top: '', left: '', margin: 'auto' });
+      $box.removeClass('maximized');
+    } else {
+      $box.css({ width: '100vw', height: '90vh', top: '5vh', left: '2vw', position: 'fixed', margin: 0 });
+      $box.addClass('maximized');
+    }
+    isMaximized = !isMaximized;
+    $('#modalHeader').toggleClass('cursor-move', !isMaximized);
+  });
+
+  // 拖曳功能（限制 header 區塊）
+  let isDragging = false;
+  let offset = { x: 0, y: 0 };
+
+  $('#modalHeader').on('mousedown', function (e) {
+    if ($('#modalBox').hasClass('maximized')) return; // 最大化狀態不能拖
+    isDragging = true;
+    const box = $('#modalBox')[0].getBoundingClientRect();
+    offset = {
+      x: e.clientX - box.left,
+      y: e.clientY - box.top
+    };
+    e.preventDefault();
+  });
+
+  $(document).on('mousemove', function (e) {
+    if (isDragging) {
+      $('#modalBox').css({
+        position: 'fixed',
+        left: e.clientX - offset.x,
+        top: e.clientY - offset.y,
+        margin: 0
+      });
+    }
+  });
+
+  $(document).on('mouseup', function () {
+    isDragging = false;
+  });
+
+
+
+
+
+});
+</script>

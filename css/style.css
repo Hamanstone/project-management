@@ -1,0 +1,276 @@
+/* style.css */
+
+:root {
+  --hover-bg: #f0f4f8;
+  --border-color: #d0d7de;
+  --success-color: #2e7d32;
+  --warning-color: #f9a825;
+  --danger-color: #d32f2f;
+  --primary-color: #1565c0;
+}
+
+.bg-info {
+  background-color: #dae6ff !important;
+  color: #484f7b !important;
+}
+.bg-success {
+  background-color: #ceeddd !important;
+  color: #409875 !important;
+}
+.bg-warning {
+  background-color: #fff1d0 !important;
+  color: #7f420f !important;
+}
+.bg-danger {
+  background-color: #fcd0d1 !important;
+  color: #9b030a !important;
+}
+.bg-primary {
+  background-color: #f1f4ff !important;
+  color: #034d94 !important;
+}
+.bg-secondary {
+  background-color: #f2f7fa !important;
+  color: #111518 !important;
+}
+.bg-purple {
+  background-color: #f8f1ff !important;
+  color: #482bb1 !important;
+}
+
+#detailColumn .tab-content {
+  max-height: calc(100vh - 220px); /* 扣掉 header、tabs、padding */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#leftColumn,
+#detailColumn {
+  transition: all 0.3s ease;
+}
+
+/* 確保 leftColumn 也有過渡 */
+#leftColumn.col-md-5,
+#leftColumn.full-width {
+  transition: all 0.3s ease; /* 與 detailColumn 的過渡時間匹配 */
+}
+
+/* 若有用到 Bootstrap .full-width 自定義樣式，也補上過渡效果 */
+.full-width {
+  width: 100% !important;
+}
+
+/* 這條規則確保了過渡效果 */
+#detailColumn {
+  transition: all 0.3s ease; /* 確保有過渡 */
+}
+
+#detailColumn.hidden {
+  opacity: 0;
+  transform: translateX(30px);
+  pointer-events: none;
+}
+
+
+
+
+.project-row {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.project-row:hover {
+  background-color: var(--hover-bg);
+}
+
+.close-btn {
+  float: right;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: #6c757d;
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: var(--danger-color);
+}
+
+#leftColumn.full-width {
+  width: 100% !important;
+  flex: 0 0 100%;
+  max-width: 100%;
+  transition: all 0.3s ease;
+}
+
+#detailColumn {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.nav-tabs .nav-link {
+  border-radius: 0.375rem 0.375rem 0 0;
+  transition: all 0.2s ease;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.status-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.ongoing-summary {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.summary-item {
+  padding: 0.5rem;
+  margin: 0.25rem 0;
+  border-left: 3px solid var(--primary-color);
+  background: rgba(255,255,255,0.7);
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+.summary-item.issue {
+  border-left-color: var(--danger-color);
+}
+
+.summary-item.task {
+  border-left-color: var(--primary-color);
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.form-floating {
+  margin-bottom: 1rem;
+}
+
+.btn-group-custom {
+  gap: 0.5rem;
+}
+
+.table-responsive-custom {
+  border-radius: 0.2rem;
+  overflow: hidden;
+  /*box-shadow: 0 2px 4px rgba(0,0,0,0.1);*/
+}
+
+@media (max-width: 768px) {
+  .col-md-7, .col-md-5 {
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+  
+  #detailColumn {
+    margin-top: 2rem;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* project timeline related style sheet */
+.weekly-project-timeline th,
+.weekly-project-timeline td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 0.25rem; /* 縮小單元格間距 */
+  font-size: 0.85rem;
+  white-space: nowrap; /* 防止日期換行 */
+}
+
+.weekly-project-timeline thead th {
+  background-color: #f0f0f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  /*border-bottom: 1px solid #dee2e6;*/
+}
+
+/* 專案名稱列的樣式 */
+.weekly-project-timeline tbody th {
+  text-align: left;
+  background-color: #f8f9fa;
+  font-weight: normal;
+  position: sticky;
+  left: 0;
+  z-index: 9;
+  border-right: 1px solid #dee2e6;
+}
+
+/* 日期格顏色 - 預設淺色 */
+.weekly-project-timeline td {
+  background-color: #e9ecef; /* 預設淺灰 */
+}
+
+/* 過期日期顏色 (更淺) */
+.weekly-project-timeline td.past-date {
+  background-color: #eee; /* 更淺的灰色 */
+}
+
+/* 未來的日期顏色 (較亮) */
+.weekly-project-timeline td.future-date {
+  background-color: #f8f9fa; /* 淺色 */
+}
+
+/* 正在進行中的日期顏色 (用專案顏色) */
+.weekly-project-timeline td.active-date {
+  /* background-color 會由 JS 動態注入 */
+}
+
+
+
+/* 定義專案顏色系 (使用 RGB 格式) */
+.project-color-1 { --project-base-color-rgb: 100, 181, 246; } /* Light Blue (#64b5f6) */
+.project-color-2 { --project-base-color-rgb: 129, 199, 132; } /* Light Green (#81c784) */
+.project-color-3 { --project-base-color-rgb: 255, 183, 77;  } /* Orange (#ffb74d) */
+.project-color-4 { --project-base-color-rgb: 186, 104, 200; } /* Purple (#ba68c8) */
+.project-color-5 { --project-base-color-rgb: 239, 154, 154; } /* Red (#ef9a9a) */
+.project-color-6 { --project-base-color-rgb: 161, 136, 127; } /* Brown (#a1887f) */
+
+/* 為每個專案顏色定義對應的活動色 */
+.project-color-1 .active-date {background-color: rgba(var(--project-base-color-rgb), 1); color: #FFF;}
+.project-color-2 .active-date {background-color: rgba(var(--project-base-color-rgb), 1); color: #FFF;}
+.project-color-3 .active-date {background-color: rgba(var(--project-base-color-rgb), 1); color: #FFF;}
+.project-color-4 .active-date {background-color: rgba(var(--project-base-color-rgb), 1); color: #FFF;}
+.project-color-5 .active-date {background-color: rgba(var(--project-base-color-rgb), 1); color: #FFF;}
+.project-color-6 .active-date {background-color: rgba(var(--project-base-color-rgb), 1); color: #FFF;}
+
+/* 新增 inactive-date 樣式：在原有顏色基礎上增加 40% 透明度 (即 60% 不透明度) */
+.project-color-1 .inactive-date {background-color: rgba(var(--project-base-color-rgb), 0.6); color: #FFF;}
+.project-color-2 .inactive-date {background-color: rgba(var(--project-base-color-rgb), 0.6); color: #FFF;}
+.project-color-3 .inactive-date {background-color: rgba(var(--project-base-color-rgb), 0.6); color: #FFF;}
+.project-color-4 .inactive-date {background-color: rgba(var(--project-base-color-rgb), 0.6); color: #FFF;}
+.project-color-5 .inactive-date {background-color: rgba(var(--project-base-color-rgb), 0.6); color: #FFF;}
+.project-color-6 .inactive-date {background-color: rgba(var(--project-base-color-rgb), 0.6); color: #FFF;}
+
+/* 如果日期格內有文字，確保文字顏色可讀 */
+.weekly-project-timeline td.active-date {
+  color: white; /* 針對深色背景設置白色文字 */
+}
+
+/* 確保表格內容在小螢幕上可以滾動 */
+.table-responsive {
+  overflow-x: auto;
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "icon": "fa-house",
+    "label": "Home",
+    "html": "pages/home.html"
+  },
+  {
+    "icon": "fa-file-lines",
+    "label": "Reports",
+    "html": "pages/reports.html"
+  },
+  {
+    "icon": "fa-chart-line",
+    "label": "Projects",
+    "html": "pages/projects.html"
+  },
+  {
+    "icon": "fa-gear",
+    "label": "Settings",
+    "html": "pages/settings.html"
+  },
+  {
+    "icon": "fa-gear",
+    "label": "Settings",
+    "html": "pages/weekly_views.html"
+  }
+]

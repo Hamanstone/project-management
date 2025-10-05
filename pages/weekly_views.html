@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weekly Views with Event Editor</title>
+
+  <!-- Tailwind (CDN build) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <!-- Litepicker -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+
+  <!-- Choices.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+  <!-- dayjs -->
+  <script defer src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+
+  <!-- jQuery -->
+  <script defer src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+  #modalEditToggle:checked ~ .modal-slide-panel {
+    max-height: 600px;
+    opacity: 1;
+  }
+
+  /* 輸入區 placeholder 字體大小 */
+  .choices__input.choices__input--cloned {
+    padding: 2px 6px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #6b7280;
+    background-color: #fff;
+  }
+
+  .choices__list--dropdown .choices__item,
+  .choices__list--dropdown .choices__item--selectable.is-highlighted {
+    font-size: 12px !important;
+    line-height: 0.6;
+  }
+
+  /* 目前被選中的那一個（下拉清單中的已選項） */
+  .choices__list--dropdown .choices__item.is-selected {
+    background-color: #e5e7eb !important; /* 灰底區別 */
+    color: #111827 !important;
+  }
+
+
+  .choices__input.choices__input--cloned:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* 修改輸入框本身的外框 */
+  .choices__inner {
+    min-height: 38px;
+    border-radius: 4px !important;   /* 圓角 */
+    border: 1px solid #d0d7de !important;  /* 邊框顏色 */
+    background-color: #ffffff !important; /* 背景色 */
+    padding: 8px 4px 2px 4px !important;    /* 內距 */
+  }
+
+  /* 已選擇的 tag 樣式（顯示項目） */
+  .choices__list--multiple .choices__item {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background-color: #6b7280;
+    color: white;
+    margin-right: 4px;
+  }
+
+  /* 限制下拉清單的高度，超過就出現捲軸 */
+  .choices__list--dropdown {
+    max-height: 300px; /* 6 行 x 40px */
+  }
+
+  .litepicker .month-item {
+    position: relative;
+  }
+  .litepicker .month-watermark {
+    position: absolute;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: rgba(0, 0, 0, 0.03);
+    pointer-events: none;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+  .litepicker .container__days .day-item {
+    font-weight: 700; /* 或 Tailwind 加 font-medium 到 parent */
+    font-size: 12px;
+  }
+
+  .litepicker .day-item {
+    color: white;
+  }
+
+  .litepicker {
+    --litepicker-day-color-hover: #555; /* Tailwind 紅色 red-600 */
+    box-shadow: none !important;
+  }
+
+  .litepicker .day-item:hover {
+    background-color: #f6f6f6 !important;
+    color: #1e3a8a !important;
+    border-radius: 9px !important;
+  }
+
+  .litepicker .day-item.is-start-date,
+  .litepicker .day-item.is-end-date {
+    background-color: #1e3a8a !important;
+    color: white !important;
+    border: 0px !important;
+  }
+
+  /* 圓角樣式拆開寫 */
+  .litepicker .day-item.is-start-date {
+    border-radius: 9px 0 0 9px !important;
+    background-color: #555 !important;
+  }
+  .litepicker .day-item.is-end-date {
+    border-radius: 0 9px 9px 0 !important;
+    background-color: #555 !important;
+  }
+  .litepicker .day-item.is-start-date.is-end-date {
+    border-radius: 9px !important;
+  }
+
+  /* 區間中間的樣式 */
+  .litepicker .day-item.is-in-range {
+    background-color: #f6f6f6 !important;
+    color: #1e3a8a !important;
+  }
+  </style>
+</head>
+<body>
+
+<div class="flex min-w-72 flex-col gap-3 p-4">
+  <p class="text-[#101518] tracking-light text-[32px] font-bold leading-tight">Weekly Views</p>
+  <p class="text-[#5c748a] text-sm font-normal leading-normal">Overview of key metrics and performance indicators</p>
+</div>
+
+<div class="flex flex-wrap gap-4 px-4 py-1">
+  <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-xl border border-[#d4dce2] p-3">
+    <table id="scheduleTable" class="table-fixed w-full min-w-[800px] border border-gray-300"></table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="projectModal" class="fixed inset-0 z-50 flex items-start justify-center bg-black bg-opacity-40 pt-20 hidden">
+  <div id="modalBox" class="bg-white rounded-xl shadow-2xl p-0 w-[40%] max-w-4xl relative">
+    <!-- Modal Header -->
+    <div id="modalHeader" class="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-gray-200 to-gray-100 border-b cursor-move rounded-t-xl">
+      <h2 class="text-base font-bold text-[#101518]" id="modalTitle">Project Info</h2>
+      <div class="flex items-center gap-2">
+        <button id="modalEditToggle" class="text-gray-500 hover:text-gray-700" title="Edit">
+          <i class="fa-regular fa-pen-to-square text-lg"></i>
+        </button>
+        <button id="modalMaximize" class="text-gray-500 hover:text-gray-700" title="Maximize / Restore">
+          <i class="fa-regular fa-window-maximize text-lg"></i>
+        </button>
+        <button id="modalClose" class="text-gray-500 hover:text-gray-700" title="Close">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+    </div>
+    <!-- Modal Body -->
+    <div id="modalContent" class="p-6 text-sm text-[#5c748a] max-h-[80vh] overflow-y-auto">
+      <div class="modal-slide-panel transition-all duration-500 ease-in-out max-h-0 overflow-hidden opacity-0 mt-2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- App JS -->
+<script defer src="pages/app.js"></script>
+</body>
+</html>
